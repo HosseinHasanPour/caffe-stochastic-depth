@@ -47,6 +47,12 @@ class Solver {
   void InitTrainNet();
   void InitTestNets();
 
+//----------- MY FUNCTIONS ------------
+   void Solve_StochDep(const char* resume_file = NULL);
+   void Step_StochDep(int iters);
+//--------------------------------------
+
+
   // Client of the Solver optionally may call this in order to set the function
   // that the solver uses to see what action it should take (e.g. snapshot or
   // exit training early).

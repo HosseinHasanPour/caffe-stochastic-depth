@@ -36,6 +36,16 @@ class Net {
    *
    */
   const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
+  	
+// -------- MY FUNCTIONS -----------------
+  void printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx);	
+  Dtype ForwardBackward_StochDep();  
+  void BackwardFromTo_StochDep(int start, int end);
+  void Backward_StochDep();
+  Dtype ForwardFromTo_StochDep(int start, int end);
+  const vector<Blob<Dtype>*>& Forward_StochDep(Dtype* loss = NULL);
+//----------------------------------------
+
   /// @brief DEPRECATED; use Forward() instead.
   const vector<Blob<Dtype>*>& ForwardPrefilled(Dtype* loss = NULL) {
     LOG_EVERY_N(WARNING, 1000) << "DEPRECATED: ForwardPrefilled() "
@@ -51,6 +61,8 @@ class Net {
    * the middle may be incorrect if all of the layers of a fan-in are not
    * included.
    */
+
+  
   Dtype ForwardFromTo(int start, int end);
   Dtype ForwardFrom(int start);
   Dtype ForwardTo(int end);
@@ -69,6 +81,7 @@ class Net {
    * computes the gradient w.r.t the parameters, and the data has already been
    * provided during the forward pass.
    */
+
   void Backward();
   void BackwardFromTo(int start, int end);
   void BackwardFrom(int start);
@@ -81,13 +94,12 @@ class Net {
    * a forward pass, e.g. to compute output feature size.
    */
   void Reshape();
-
-  Dtype ForwardBackward() {
+  Dtype ForwardBackward()  {
     Dtype loss;
     Forward(&loss);
     Backward();
     return loss;
-  }
+  };
 
   /// @brief Updates the network weights based on the diff values computed.
   void Update();
@@ -247,6 +259,15 @@ class Net {
   void BackwardDebugInfo(const int layer_id);
   /// @brief Helper for displaying debug info in Update.
   void UpdateDebugInfo(const int param_id);
+
+
+//-------------- MY VARIABLES --------------------
+  vector<shared_ptr<Layer<Dtype> > > layers_stochdept_;
+  vector<vector<Blob<Dtype>*> > bottom_vecs_stochdept_;
+  vector<vector<Blob<Dtype>*> > top_vecs_stochdept_;
+//------------------------------------------------
+
+
 
   /// @brief The network name
   string name_;
