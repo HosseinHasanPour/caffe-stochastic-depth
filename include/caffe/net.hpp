@@ -39,11 +39,12 @@ class Net {
   	
 // -------- MY FUNCTIONS -----------------
   void printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx);	
-  Dtype ForwardBackward_StochDep();  
-  void BackwardFromTo_StochDep(int start, int end);
-  void Backward_StochDep();
-  Dtype ForwardFromTo_StochDep(int start, int end);
-  const vector<Blob<Dtype>*>& Forward_StochDep(Dtype* loss = NULL);
+  Dtype ForwardBackward_StochDep(vector<int>* layers_chosen); 
+  void BackwardFromTo_StochDep(vector<int>* layers_chosen);
+  void Backward_StochDep(std::vector<int>*);
+  Dtype ForwardFromTo_StochDep(std::vector<int>*);
+  const vector<Blob<Dtype>*>& Forward_StochDep(vector<int>* layers_chosen, Dtype* loss);
+  
 //----------------------------------------
 
   /// @brief DEPRECATED; use Forward() instead.

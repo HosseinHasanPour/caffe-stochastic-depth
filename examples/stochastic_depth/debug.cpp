@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	std::cout << "it's working\n";
 	Caffe::set_mode(Caffe::GPU);
 	
-	string param_file = "examples/stochastic_depth_caffe/solver.prototxt";
+	string param_file = "examples/stochastic_depth/solver.prototxt";
   	SolverParameter param;
   	ReadSolverParamsFromTextFileOrDie(param_file, &param);
   	Solver<float>* solver = SolverRegistry<float>::CreateSolver(param);	
@@ -103,28 +103,28 @@ Dtype Net<Dtype>::ForwardFromTo_StochDep(vector<int>* layers_chosen) {
 //  	}
 //  	return loss;
 //
-	cout << "ForwardFromTo b" << endl;
+	cout << "ForwardFromTo b yeeee" << endl;
   	Dtype loss = 0;
 	int layer_idx;
 	int bottom_idx = 0;
   	for (int i = 0; i < layers_chosen->size(); i++) {
     	layer_idx = (*layers_chosen)[i];
 		if (i != 0) {
-			bottom_idx = (*layers_chosen)[i-1];
+			bottom_idx = (*layers_chosen)[i-1] + 1;
 		}
 		if (bottom_idx != 0) {
 //		cout << bottom_vecs_[
-//		cout << "i = " << i << "\t" << bottom_idx-1 << ":" << layers()[bottom_idx-1]->type() << " \t-->\t " << layer_idx << ":" << layers()[layer_idx]->type()  << endl;}
+		cout << "i = " << i << "\t" << bottom_idx-1 << ":" << layers()[bottom_idx-1]->type() << " \t-->\t " << layer_idx << ":" << layers()[layer_idx]->type()  << endl;}
     	
-//		if (layer_idx == 101 || layer_idx == 48 || layer_idx == 112 || layer_idx == 59 || layer_idx == 69 || layer_idx == 122 || layer_idx == 110 || layer_idx == 111 || layer_idx == 120 || layer_idx == 121 || layer_idx == 57 || layer_idx == 58i || layer_idx == 96 || layer_idx == 88 || layer_idx == 87 ||  layer_idx == 95) {
-//            cout << "bottom vecs: "<< layer_idx << " " << layers()[layer_idx]->type() << endl;
-//            printvecblobs(bottom_vecs_, layer_idx);
-//            cout << "top vecs: " << layer_idx << " " << layers()[layer_idx]->type() <<  endl;
-//            printvecblobs(top_vecs_, layer_idx);
-//			cout << endl;
-//        }
-		}
-		Dtype layer_loss = layers_[layer_idx]->Forward(top_vecs_[bottom_idx], top_vecs_[layer_idx]);
+		if (layer_idx == 101 || layer_idx == 48 || layer_idx == 112 || layer_idx == 59 || layer_idx == 69 || layer_idx == 122 || layer_idx == 110 || layer_idx == 111 || layer_idx == 120 || layer_idx == 121 || layer_idx == 57 || layer_idx == 58i || layer_idx == 96 || layer_idx == 88 || layer_idx == 87 ||  layer_idx == 95) {
+            cout << "bottom vecs: "<< layer_idx << " " << layers()[layer_idx]->type() << endl;
+            printvecblobs(bottom_vecs_, layer_idx);
+            cout << "top vecs: " << layer_idx << " " << layers()[layer_idx]->type() <<  endl;
+           printvecblobs(top_vecs_, layer_idx);
+			cout << endl;
+        }
+		
+		Dtype layer_loss = layers_[layer_idx]->Forward(bottom_vecs_[bottom_idx], top_vecs_[layer_idx]);
     	loss += layer_loss;
     	if (debug_info_) { ForwardDebugInfo(layer_idx); }
   	}
