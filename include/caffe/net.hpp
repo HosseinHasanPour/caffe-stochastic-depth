@@ -44,7 +44,9 @@ class Net {
   void Backward_StochDep(std::vector<int>*);
   Dtype ForwardFromTo_StochDep(std::vector<int>*);
   const vector<Blob<Dtype>*>& Forward_StochDep(vector<int>* layers_chosen, Dtype* loss);
-  
+  void ChooseLayers_StochDep(vector<int>* layers_chosen);  
+  void standardResLayer(int & elts, int & idx, vector<int>* layers_chosen, double ran, double prob);
+  void transitionResLayer(int & elts, int& idx, vector<int>* layers_chosen, double ran, double prob);
 //----------------------------------------
 
   /// @brief DEPRECATED; use Forward() instead.

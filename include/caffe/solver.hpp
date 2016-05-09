@@ -50,7 +50,6 @@ class Solver {
 //----------- MY FUNCTIONS ------------
    void Solve_StochDep(const char* resume_file = NULL);
    void Step_StochDep(int, std::vector<int>*);
-   void ChooseLayers_StochDep(vector<int>* layers_chosen);
 //--------------------------------------
 
 
