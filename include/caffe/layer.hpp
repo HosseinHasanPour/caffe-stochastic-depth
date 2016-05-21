@@ -16,6 +16,7 @@
  Forward declare boost::thread instead of including boost/thread.hpp
  to avoid a boost/NVCC issues (#1009, #1010) on OSX.
  */
+using namespace std;
 namespace boost { class mutex; }
 
 namespace caffe {
