@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "caffe/blob.hpp"
 #include "caffe/common.hpp"
@@ -451,9 +452,12 @@ template <typename Dtype>
 inline Dtype Layer<Dtype>::Forward(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
   // Lock during forward to ensure sequential forward
+  cout << "1" << endl;
   Lock();
+      cout << "2" << endl;
   Dtype loss = 0;
   Reshape(bottom, top);
+      cout << "3" << endl;
   switch (Caffe::mode()) {
   case Caffe::CPU:
     Forward_cpu(bottom, top);
@@ -466,15 +470,22 @@ inline Dtype Layer<Dtype>::Forward(const vector<Blob<Dtype>*>& bottom,
     }
     break;
   case Caffe::GPU:
+    cout << "4" << endl;
     Forward_gpu(bottom, top);
+          cout << "5" << endl;
 #ifndef CPU_ONLY
     for (int top_id = 0; top_id < top.size(); ++top_id) {
       if (!this->loss(top_id)) { continue; }
+      cout << "6" << endl;
       const int count = top[top_id]->count();
+      cout << "7" << endl;
       const Dtype* data = top[top_id]->gpu_data();
+      cout << "8" << endl;
       const Dtype* loss_weights = top[top_id]->gpu_diff();
+      cout << "9" << endl;
       Dtype blob_loss = 0;
       caffe_gpu_dot(count, data, loss_weights, &blob_loss);
+      cout << "10" << endl;
       loss += blob_loss;
     }
 #endif
