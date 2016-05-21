@@ -119,12 +119,14 @@ Dtype Net<Dtype>::ForwardFromTo_StochDep(vector<int>* layers_chosen) {
 //  	}
 //  	return loss;
 //
-	cout << "ForwardFromTo b yeeee" << endl;
+	cout << "ForwardFromTo b" << endl;
   	Dtype loss = 0;
 	int layer_idx;
 //	int bottom_idx = 0;
   	for (int i = 0; i < layers_chosen->size(); i++) {
+        cout << "about to choose layer_idx" << endl;
     	layer_idx = (*layers_chosen)[i];
+        cout << "i: " << i << " \t layer_id: " << layer_idx << endl;
 //		if (i != 0) {
 //			bottom_idx = (*layers_chosen)[i-1] + 1;
 //		}
