@@ -47,19 +47,11 @@ void Net<Dtype>::standardResLayer(int & elts, int & idx, vector<int>* layers_cho
 	//cout << prob << endl;
    	if (ran < prob){ // include res block
     	for (int i = 0; i < 10; i++){
-			bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
- 	        top_vecs_stochdept_[idx] = top_vecs_[elts];
-			(*layers_chosen)[idx] = elts;
-			elts += 1;
-			idx += 1;
+            layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0);
        	}
  	}
    	else{  // skip res block
-		bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
-		top_vecs_stochdept_[idx] = bottom_vecs_[elts+10];
-		(*layers_chosen)[idx] = elts;
-		elts += 10;
-		idx += 1;
+        layerHelper_StochDep(elts, idx, layers_chosen, 10, 1, 10);
     }
 }
 
@@ -67,42 +59,27 @@ template <typename Dtype>
 void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_chosen, double ran, double prob){
 	//cout << prob << endl;
    	if (ran < prob) { //include res block
-       	for (int i = 0; i < 13; i++) { 
-			bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
-            top_vecs_stochdept_[idx] = top_vecs_[elts];
-			(*layers_chosen)[idx] = elts;
-			elts += 1;
-			idx += 1;
+       	for (int i = 0; i < 13; i++) {
+            layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0);
       	}   
   	}
   	else { // skip res block
-		bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
-        top_vecs_stochdept_[idx] = bottom_vecs_[elts+2];
-		(*layers_chosen)[idx] = elts;
-		elts += 2;
-		idx += 1;
-       	
-		bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
-        top_vecs_stochdept_[idx] = top_vecs_[elts];
-		(*layers_chosen)[idx] = elts;
-		elts += 1;
-		idx += 1;
-      
-		bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
-        top_vecs_stochdept_[idx] = top_vecs_[elts];	
-		(*layers_chosen)[idx] = elts;
-		elts += 1;
-		idx += 1;
-        
-		bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
-		top_vecs_stochdept_[idx] = bottom_vecs_[elts+9];
-	   	(*layers_chosen)[idx] = elts;
-		elts += 9;
-		idx += 1;
+        layerHelper_StochDep(elts, idx, layers_chosen, 2, 1, 2);
+        layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0);
+        layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0);
+        layerHelper_StochDep(elts, idx, layers_chosen, 9, 1, 9);
 		cout << "skipping transition block: " << elts << endl;
  	}   
 }
 
+template <typename Dtype>
+void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int & elt_incr, int & idx_incr, int & bottom_incr) {
+    bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
+    top_vecs_stochdept_[idx] = bottom_vecs_[elts+2];
+    (*layers_chosen)[idx] = elts;
+    elts += 2;
+    idx += 1;
+}
 
 
 template <typename Dtype>
