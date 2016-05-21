@@ -141,8 +141,14 @@ Dtype Net<Dtype>::ForwardFromTo_StochDep(vector<int>* layers_chosen) {
 //            printvecblobs(top_vecs_, layer_idx);
 //			cout << endl;
 //        }
-		
-		Dtype layer_loss = layers_[layer_idx]->Forward(bottom_vecs_stochdept_[i], top_vecs_stochdept_[i]);
+        shared_ptr<Layer<Dtype> > curr_layer = layers_[layer_idx];
+        cout << "have curr_layer" << endl;
+        vector<Blob<Dtype>*> curr_bottom = bottom_vecs_stochdept_[i];
+        cout << "have curr_bottom" << endl;
+        vector<Blob<Dtype>*> curr_top = top_vecs_stochdept_[i];
+        cout << "have curr_top" << endl;
+        Dtype layer_loss = curr_layer->Forward(curr_bottom, curr_top);
+        cout << "after loss_layer" << endl;
     	loss += layer_loss;
     	if (debug_info_) { ForwardDebugInfo(layer_idx); }
   	}
