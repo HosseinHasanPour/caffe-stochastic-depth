@@ -35,9 +35,9 @@ int main(int argc, char** argv)
 	vector<int>* layers_chosen = new vector<int>();
 	net->ChooseLayers_StochDep(layers_chosen);
 
-//	for (int i = 0; i < layers_chosen->size(); i++) {
-//		cout << (*layers_chosen)[i] << ": " <<layers[(*layers_chosen)[i]]->type() << endl;
-//	}
+	for (int i = 0; i < layers_chosen->size(); i++) {
+		cout << (*layers_chosen)[i] << ": " <<layers[(*layers_chosen)[i]]->type() << endl;
+	}
 	cout << "starting solve" << endl;
 	solver->Solve_StochDep();
 }
@@ -304,7 +304,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
     if (param_.test_interval() && iter_ % param_.test_interval() == 0
         && (iter_ > 0 || param_.test_initialization())
         && Caffe::root_solver()) {
-      // I DISABLED THIS, REMEMBER TO UNCOMMENT LATER   
+      // I DISABLED THIS, REMEMBER TO UNCOMMENT LATER
       //TestAll();
       if (requested_early_exit_) {
         // Break out of the while loop because stop was requested while testing.
