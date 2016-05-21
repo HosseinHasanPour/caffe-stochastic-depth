@@ -47,7 +47,7 @@ class Net {
   void ChooseLayers_StochDep(vector<int>* layers_chosen);  
   void standardResLayer(int & elts, int & idx, vector<int>* layers_chosen, double ran, double prob);
   void transitionResLayer(int & elts, int& idx, vector<int>* layers_chosen, double ran, double prob);
-  void layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int & elt_incr, int & idx_incr,int & bottom_incr);
+  void layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int  elt_incr, int  idx_incr,int  bottom_incr);
 //----------------------------------------
 
   /// @brief DEPRECATED; use Forward() instead.

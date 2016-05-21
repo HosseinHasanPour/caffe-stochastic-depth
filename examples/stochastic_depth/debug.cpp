@@ -73,7 +73,7 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
 }
 
 template <typename Dtype>
-void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int & elt_incr, int & idx_incr, int & bottom_incr) {
+void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int elt_incr, int idx_incr, int bottom_incr) {
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
     top_vecs_stochdept_[idx] = bottom_vecs_[elts+2];
     (*layers_chosen)[idx] = elts;
