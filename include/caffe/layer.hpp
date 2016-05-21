@@ -475,6 +475,7 @@ inline Dtype Layer<Dtype>::Forward(const vector<Blob<Dtype>*>& bottom,
     Forward_gpu(bottom, top);
           cout << "5" << endl;
 #ifndef CPU_ONLY
+    cout << "top.size(): " << top.size() << endl;
     for (int top_id = 0; top_id < top.size(); ++top_id) {
       if (!this->loss(top_id)) { continue; }
       cout << "6" << endl;
