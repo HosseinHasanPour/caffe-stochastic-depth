@@ -77,8 +77,21 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
     top_vecs_stochdept_[idx] = bottom_vecs_[elts + bottom_incr];
     (*layers_chosen)[idx] = elts;
+
+    cout << "my layers: " << layers_[elts]->type() << "\t"
+        << "bottom dim: "<< bottom_vecs_stochdept_[idx].size()
+        << "bottom size: " << bottom_vecs_stochdept_[idx][0]->shape()
+        << "top dim: " << top_vecs_stochdept_[idx].size()
+        << "top size: " << top_vecs_stochdept_[idx][0]->shape() << endl;
+
+    cout << "og layers: " << layers_[elts]->type() << "\t"
+        << "bottom dim: "<< bottom_vecs_[elts].size()
+        << "bottom size: " << bottom_vecs_[elts][0]->shape()
+        << "top dim: " << top_vecs_[elts].size()
+        << "top size: " << top_vecs_[elts + bottom_incr][0]->shape() << endl;
+
     elts += elt_incr;
-    idx += idx_incr;    
+    idx += idx_incr;
 }
 
 
