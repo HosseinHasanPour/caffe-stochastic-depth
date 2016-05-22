@@ -85,18 +85,6 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
 
     (*layers_chosen)[idx] = elts;
 
-
-
-//    cout << "1" << endl;
-    vector<Blob<Dtype>*> bottom_vec = bottom_vecs_stochdept_[idx];
-//    cout << "2" << endl;
-    vector<Blob<Dtype>*> top_vec = top_vecs_stochdept_[idx];
-    cout << "3" << endl;
-    cout << "bottom_vec.size(): " << bottom_vec.size() << "\t bottom_vecs_[elts]: " << bottom_vecs_[elts].size() << "\t elts: " << elts << endl;
-    Blob<Dtype>* bottom_blo = bottom_vec[0];
-    cout << "4" << endl;
-    Blob<Dtype>* top_blo = top_vec[0];
-//    cout << "5" << endl;
     int next_layer_num;
     if (use_top){
         next_layer_num = elts+bottom_incr + 1;
@@ -104,6 +92,20 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
     else {
         next_layer_num = elts+bottom_incr;
     }
+
+
+//    cout << "1" << endl;
+    vector<Blob<Dtype>*> bottom_vec = bottom_vecs_stochdept_[idx];
+//    cout << "2" << endl;
+    vector<Blob<Dtype>*> top_vec = top_vecs_stochdept_[idx];
+    cout << "3" << endl;
+    cout << "my layers: " << layers_[elts]->type() << elts << "->" << layers_[next_layer_num]->type() << next_layer_num << endl;
+    cout << "bottom_vec.size(): " << bottom_vec.size() << "\t bottom_vecs_[elts]: " << bottom_vecs_[elts].size() << "\t elts: " << elts << endl;
+    Blob<Dtype>* bottom_blo = bottom_vec[0];
+    cout << "4" << endl;
+    Blob<Dtype>* top_blo = top_vec[0];
+//    cout << "5" << endl;
+
     cout << "my layers: " << layers_[elts]->type() << elts << "->" << layers_[next_layer_num]->type() << next_layer_num
         << "\tbottom dim: "<< bottom_vec.size()
         << "\tbottom size: " << bottom_blo->shape(1) << " "
