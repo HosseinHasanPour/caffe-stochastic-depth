@@ -49,7 +49,7 @@ void Net<Dtype>::standardResLayer(int & elts, int & idx, vector<int>* layers_cho
  	}
    	else{  // skip res block
         layerHelper_StochDep(elts, idx, layers_chosen, 10, 1, 10, false);
-//        cout << "skipping standard block: " << elts << endl;
+        cout << "skipping standard block: " << elts << endl;
     }
 }
 
@@ -65,15 +65,12 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, layers_chosen, 9, 1, 9, false);
-//		cout << "skipping transition block: " << elts << endl;
+		cout << "skipping transition block: " << elts << endl;
  	}   
 }
 
 template <typename Dtype>
 void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int elt_incr, int idx_incr, int bottom_incr, bool use_top) {
-
-
-
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
 
     if (use_top) {
@@ -135,8 +132,7 @@ void Net<Dtype>::BackwardFromTo_StochDep(vector<int>* layers_chosen) {
 	for (int i = layers_chosen->size() - 1; i >= 0; i--) {
 		layer_idx = (*layers_chosen)[i];
     	if (layer_need_backward_[layer_idx]) {
-      		layers_[layer_idx]->Backward(
-          		top_vecs_stochdept_[i], bottom_need_backward_[layer_idx], bottom_vecs_stochdept_[i]);
+      		layers_[layer_idx]->Backward(top_vecs_stochdept_[i], bottom_need_backward_[layer_idx], bottom_vecs_stochdept_[i]);
       		if (debug_info_) { BackwardDebugInfo(layer_idx); }
     	}
   	}
@@ -250,6 +246,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
     Dtype loss = 0;
     
     for (int i = 0; i < param_.iter_size(); ++i) {
+      cout << param_.iter_size() << endl;
       net_->ChooseLayers_StochDep(layers_chosen);
       loss += net_->ForwardBackward_StochDep(layers_chosen);
     }
