@@ -88,17 +88,17 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
 
     (*layers_chosen)[idx] = elts;
 
-    // prints
-
-    shared_ptr<Layer<Dtype> > curr_layer = layers_[elts];
-    vector<Blob<Dtype>*> og_bottom = bottom_vecs_[elts];
-    vector<Blob<Dtype>*> og_top = top_vecs_[elts];
-    cout << "og layer:\t" << curr_layer->type() << " " <<  elts << "\tbottom size: " << og_bottom.size() << "\ttop size: " << og_top.size() <<  endl;
-    vector<Blob<Dtype>*> curr_bottom = bottom_vecs_stochdept_[idx];
-    vector<Blob<Dtype>*> curr_top = top_vecs_stochdept_[idx];
-    cout << "my layer:\t" << curr_layer->type() << " " <<  elts << "\tbottom size: " << curr_bottom.size() << "\ttop size: " << curr_top.size() <<  endl;
-
-    // end prints
+//    // prints
+//
+//    shared_ptr<Layer<Dtype> > curr_layer = layers_[elts];
+//    vector<Blob<Dtype>*> og_bottom = bottom_vecs_[elts];
+//    vector<Blob<Dtype>*> og_top = top_vecs_[elts];
+//    cout << "og layer:\t" << curr_layer->type() << " " <<  elts << "\tbottom size: " << og_bottom.size() << "\ttop size: " << og_top.size() <<  endl;
+//    vector<Blob<Dtype>*> curr_bottom = bottom_vecs_stochdept_[idx];
+//    vector<Blob<Dtype>*> curr_top = top_vecs_stochdept_[idx];
+//    cout << "my layer:\t" << curr_layer->type() << " " <<  elts << "\tbottom size: " << curr_bottom.size() << "\ttop size: " << curr_top.size() <<  endl;
+//
+//    // end prints
 
     elts += elt_incr;
     idx += idx_incr;
