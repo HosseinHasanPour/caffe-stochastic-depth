@@ -168,7 +168,7 @@ void Net<Dtype>::BackwardFromTo_StochDep(vector<int>* layers_chosen) {
 		else {
 			bottom_idx = (*layers_chosen)[i-1] + 1;
 		}
-		if (bottom_idx != 0) {
+//		if (bottom_idx != 0) {
 //		cout << "i = " << i << "\t" << bottom_idx-1 << ":" << layers()[bottom_idx-1]->type() << " \t<--\t " << layer_idx << ":" << layers()[layer_idx]->type()  << endl;}
     	if (layer_need_backward_[layer_idx]) {
       		layers_[layer_idx]->Backward(
