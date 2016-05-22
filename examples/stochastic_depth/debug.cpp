@@ -225,9 +225,7 @@ void Net<Dtype>::ChooseLayers_StochDep(vector<int>* layers_chosen){
     standardResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)13)/13);
 
     for (int i = 0; i < 4; i++) {
-        (*layers_chosen)[idx] = elts;
-		elts += 1;
-		idx += 1;
+        layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
     }
 	bottom_vecs_stochdept_.resize(idx);
 	top_vecs_stochdept_.resize(idx);
