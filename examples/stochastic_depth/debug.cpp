@@ -84,7 +84,7 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
 
     (*layers_chosen)[idx] = elts;
 
-    cout << "bottom_incr: " << bottom_incr;
+    cout << "bottom_incr: " << bottom_incr << endl;
 
 //    cout << "1" << endl;
     vector<Blob<Dtype>*> bottom_vec = bottom_vecs_stochdept_[idx];
