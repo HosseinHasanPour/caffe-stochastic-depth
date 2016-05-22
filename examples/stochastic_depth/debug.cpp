@@ -74,6 +74,7 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
 
 template <typename Dtype>
 void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int elt_incr, int idx_incr, int bottom_incr, bool use_top) {
+    cout << "bottom_incr: " << bottom_incr << endl;
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
     if (use_top) {
         top_vecs_stochdept_[idx] = top_vecs_[elts + bottom_incr];
@@ -84,7 +85,7 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
 
     (*layers_chosen)[idx] = elts;
 
-    cout << "bottom_incr: " << bottom_incr << endl;
+
 
 //    cout << "1" << endl;
     vector<Blob<Dtype>*> bottom_vec = bottom_vecs_stochdept_[idx];
