@@ -74,8 +74,8 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
 
 template <typename Dtype>
 void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int elt_incr, int idx_incr, int bottom_incr, bool use_top) {
-    cout << "bottom_incr: " << bottom_incr << endl;
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
+
     if (use_top) {
         top_vecs_stochdept_[idx] = top_vecs_[elts + bottom_incr];
     }
@@ -84,52 +84,6 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
     }
 
     (*layers_chosen)[idx] = elts;
-
-    int next_layer_num;
-    if (use_top){
-        next_layer_num = elts+bottom_incr + 1;
-    }
-    else {
-        next_layer_num = elts+bottom_incr;
-    }
-
-
-    vector<Blob<Dtype>*> bottom_vec = bottom_vecs_stochdept_[idx];
-    vector<Blob<Dtype>*> top_vec = top_vecs_stochdept_[idx];
-    cout << "3" << endl;
-    cout << "my layers: " << layers_[elts]->type() << elts << "->" << layers_[next_layer_num]->type() << next_layer_num << endl;
-    cout << "bottom_vec.size(): " << bottom_vec.size() << "\t bottom_vecs_[elts].size(): " << bottom_vecs_[elts].size() << "\t elts: "
-                                        << elts << "\ttop_vec.size(): " << top_vec.size() << endl;
-    Blob<Dtype>* bottom_blo = bottom_vec[0];
-    cout << "4" << endl;    
-    Blob<Dtype>* top_blo = top_vec[0];
-
-//    cout << "my layers: " << layers_[elts]->type() << elts << "->" << layers_[next_layer_num]->type() << next_layer_num
-//        << "\tbottom dim: "<< bottom_vec.size()
-//        << "\tbottom size: " << bottom_blo->shape(1) << " "
-//        << bottom_blo->shape(2) << " "
-//        << bottom_blo->shape(3)
-//        << "\ttop dim: " << top_vec.size()
-//        << "\ttop size: " << top_blo->shape(1) << " "
-//        << top_blo->shape(2) << " "
-//        << top_blo->shape(3)<<  endl;
-
-
-    bottom_vec = bottom_vecs_[elts];
-    top_vec = top_vecs_[elts];
-    bottom_blo = bottom_vec[0];
-    top_blo = top_vec[0];
-
-//    cout << "og layers: " << layers_[elts]->type() << elts << "->" << layers_[elts+1]->type() << elts+1
-//        << "\tbottom dim: "<< bottom_vec.size()
-//        << "\tbottom size: " << bottom_blo->shape(1) << " "
-//        << bottom_blo->shape(2) << " "
-//        << bottom_blo->shape(3)
-//        << "\ttop dim: " << top_vec.size()
-//        << "\ttop size: " << top_blo->shape(1)<< " "
-//        << top_blo->shape(2) << " "
-//        << top_blo->shape(3) << "\n" << endl;
-    //cout << "11" << endl;
 
     elts += elt_incr;
     idx += idx_incr;
