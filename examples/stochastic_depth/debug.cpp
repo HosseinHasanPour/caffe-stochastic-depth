@@ -94,7 +94,7 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
         << top_blo->shape(3)<< endl;
 
     bottom_vec = bottom_vecs_[elts];
-    top_vec = top_vecs_[elts + bottom_incr];
+    top_vec = top_vecs_[elts];
     bottom_blo = bottom_vec[0];
     top_blo = top_vec[0];
 
