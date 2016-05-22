@@ -471,23 +471,23 @@ inline Dtype Layer<Dtype>::Forward(const vector<Blob<Dtype>*>& bottom,
     }
     break;
   case Caffe::GPU:
-    cout << "4" << endl;
+//    cout << "4" << endl;
     Forward_gpu(bottom, top);
-          cout << "5" << endl;
+//          cout << "5" << endl;
 #ifndef CPU_ONLY
-    cout << "top.size(): " << top.size() << endl;
+//    cout << "top.size(): " << top.size() << endl;
     for (int top_id = 0; top_id < top.size(); ++top_id) {
       if (!this->loss(top_id)) { continue; }
-      cout << "6" << endl;
+//      cout << "6" << endl;
       const int count = top[top_id]->count();
-      cout << "7" << endl;
+//      cout << "7" << endl;
       const Dtype* data = top[top_id]->gpu_data();
-      cout << "8" << endl;
+//      cout << "8" << endl;
       const Dtype* loss_weights = top[top_id]->gpu_diff();
-      cout << "9" << endl;
+//      cout << "9" << endl;
       Dtype blob_loss = 0;
       caffe_gpu_dot(count, data, loss_weights, &blob_loss);
-      cout << "10" << endl;
+//      cout << "10" << endl;
       loss += blob_loss;
     }
 #endif
