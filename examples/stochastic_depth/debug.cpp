@@ -78,26 +78,35 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
     top_vecs_stochdept_[idx] = bottom_vecs_[elts + bottom_incr];
     (*layers_chosen)[idx] = elts;
 
+    vector<Blob<Dtype>*> bottom_vec = bottom_vecs_stochdept_[idx];
+    vector<Blob<Dtype>*> top_vec = top_vecs_stochdept_[idx];
+    Blob<Dtype>* bottom_blo = bottom_vec[0];
+    Blob<Dtype>* top_blo = top_vec[0];
 
     cout << "my layers: " << layers_[elts]->type() << "\t"
-        << "bottom dim: "<< bottom_vecs_stochdept_[idx].size()
-        << "bottom size: " << bottom_vecs_stochdept_[idx][0]->shape(1) << " "
-        << bottom_vecs_stochdept_[idx][0]->shape(2) << " "
-        << bottom_vecs_stochdept_[idx][0]->shape(3)
+        << "bottom dim: "<< bottom_vec.size()
+        << "bottom size: " << bottom_blo->shape(1) << " "
+        << bottom_blo->shape(2) << " "
+        << bottom_blo->shape(3)
         << "top dim: " << top_vecs_stochdept_[idx].size()
         << "top size: " << top_vecs_stochdept_[idx][0]->shape(1) << " "
-        << top_vecs_stochdept_[idx][0]->shape(2) << " "
-        << top_vecs_stochdept_[idx][0]->shape(3)<< endl;
+        << top_blo->shape(2) << " "
+        << top_blo->shape(3)<< endl;
+
+    bottom_vec = bottom_vecs_[elts];
+    top_vec = top_vecs_[elts + bottom_incr];
+    bottom_blo = bottom_vec[0];
+    top_blo = top_vec[0];
 
     cout << "og layers: " << layers_[elts]->type() << "\t"
-        << "bottom dim: "<< bottom_vecs_[elts].size()
-        << "bottom size: " << bottom_vecs_[elts][0]->shape(1) << " "
-        << bottom_vecs_[idx][0]->shape(2) << " "
-        << bottom_vecs_[idx][0]->shape(3)
-        << "top dim: " << top_vecs_[elts].size()
-        << "top size: " << top_vecs_[elts + bottom_incr][0]->shape(1)<< " "
-        << top_vecs_[idx][0]->shape(2) << " "
-        << top_vecs_[idx][0]->shape(3) << endl;
+        << "bottom dim: "<< bottom_vec.size()
+        << "bottom size: " << bottom_blo->shape(1) << " "
+        << bottom_blo->shape(2) << " "
+        << bottom_blo->shape(3)
+        << "top dim: " << top_vec.size()
+        << "top size: " << top_blo->shape(1)<< " "
+        << top_blo->shape(2) << " "
+        << top_blo->shape(3) << endl;
 
     elts += elt_incr;
     idx += idx_incr;
