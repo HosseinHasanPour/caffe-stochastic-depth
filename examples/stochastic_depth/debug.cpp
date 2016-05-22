@@ -94,48 +94,41 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
     }
 
 
-//    cout << "1" << endl;
     vector<Blob<Dtype>*> bottom_vec = bottom_vecs_stochdept_[idx];
-//    cout << "2" << endl;
     vector<Blob<Dtype>*> top_vec = top_vecs_stochdept_[idx];
     cout << "3" << endl;
     cout << "my layers: " << layers_[elts]->type() << elts << "->" << layers_[next_layer_num]->type() << next_layer_num << endl;
-    cout << "bottom_vec.size(): " << bottom_vec.size() << "\t bottom_vecs_[elts]: " << bottom_vecs_[elts].size() << "\t elts: " << elts << endl;
+    cout << "bottom_vec.size(): " << bottom_vec.size() << "\t bottom_vecs_[elts].size(): " << bottom_vecs_[elts].size() << "\t elts: "
+                                        << elts << "\ttop_vec.size(): " << top_vec.size() << endl;
     Blob<Dtype>* bottom_blo = bottom_vec[0];
-    cout << "4" << endl;
+    cout << "4" << endl;    
     Blob<Dtype>* top_blo = top_vec[0];
-//    cout << "5" << endl;
 
-    cout << "my layers: " << layers_[elts]->type() << elts << "->" << layers_[next_layer_num]->type() << next_layer_num
-        << "\tbottom dim: "<< bottom_vec.size()
-        << "\tbottom size: " << bottom_blo->shape(1) << " "
-        << bottom_blo->shape(2) << " "
-        << bottom_blo->shape(3)
-        << "\ttop dim: " << top_vec.size()
-        << "\ttop size: " << top_blo->shape(1) << " "
-        << top_blo->shape(2) << " "
-        << top_blo->shape(3)<<  endl;
+//    cout << "my layers: " << layers_[elts]->type() << elts << "->" << layers_[next_layer_num]->type() << next_layer_num
+//        << "\tbottom dim: "<< bottom_vec.size()
+//        << "\tbottom size: " << bottom_blo->shape(1) << " "
+//        << bottom_blo->shape(2) << " "
+//        << bottom_blo->shape(3)
+//        << "\ttop dim: " << top_vec.size()
+//        << "\ttop size: " << top_blo->shape(1) << " "
+//        << top_blo->shape(2) << " "
+//        << top_blo->shape(3)<<  endl;
 
 
-//    cout << "6" << endl;
     bottom_vec = bottom_vecs_[elts];
-//    cout << "7" << endl;
     top_vec = top_vecs_[elts];
-//    cout << "8" << endl;
     bottom_blo = bottom_vec[0];
-//    cout << "9" << endl;
     top_blo = top_vec[0];
-//    cout << "10" << endl;
 
-    cout << "og layers: " << layers_[elts]->type() << elts << "->" << layers_[elts+1]->type() << elts+1
-        << "\tbottom dim: "<< bottom_vec.size()
-        << "\tbottom size: " << bottom_blo->shape(1) << " "
-        << bottom_blo->shape(2) << " "
-        << bottom_blo->shape(3)
-        << "\ttop dim: " << top_vec.size()
-        << "\ttop size: " << top_blo->shape(1)<< " "
-        << top_blo->shape(2) << " "
-        << top_blo->shape(3) << "\n" << endl;
+//    cout << "og layers: " << layers_[elts]->type() << elts << "->" << layers_[elts+1]->type() << elts+1
+//        << "\tbottom dim: "<< bottom_vec.size()
+//        << "\tbottom size: " << bottom_blo->shape(1) << " "
+//        << bottom_blo->shape(2) << " "
+//        << bottom_blo->shape(3)
+//        << "\ttop dim: " << top_vec.size()
+//        << "\ttop size: " << top_blo->shape(1)<< " "
+//        << top_blo->shape(2) << " "
+//        << top_blo->shape(3) << "\n" << endl;
     //cout << "11" << endl;
 
     elts += elt_incr;
