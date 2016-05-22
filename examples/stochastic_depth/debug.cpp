@@ -92,6 +92,7 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
 //    cout << "2" << endl;
     vector<Blob<Dtype>*> top_vec = top_vecs_stochdept_[idx];
     cout << "3" << endl;
+    cout << "bottom_vec.size(): " << bottom_vec.size() << endl;
     Blob<Dtype>* bottom_blo = bottom_vec[0];
     cout << "4" << endl;
     Blob<Dtype>* top_blo = top_vec[0];
