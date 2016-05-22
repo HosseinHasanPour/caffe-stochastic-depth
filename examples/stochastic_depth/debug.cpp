@@ -88,7 +88,7 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
     Blob<Dtype>* top_blo = top_vec[0];
 //    cout << "5" << endl;
 
-    cout << "my layers: " << layers_[elts]->type()
+    cout << "my layers: " << layers_[elts]->type()  << "->" << layers_[elts + bottom_incr]->type()
         << "\tbottom dim: "<< bottom_vec.size()
         << "\tbottom size: " << bottom_blo->shape(1) << " "
         << bottom_blo->shape(2) << " "
@@ -109,7 +109,7 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
     top_blo = top_vec[0];
 //    cout << "10" << endl;
 
-    cout << "og layers: " << layers_[elts]->type() <<" " << elts
+    cout << "og layers: " << layers_[elts]->type() << "->" << layers_[elts+1]->type()
         << "\tbottom dim: "<< bottom_vec.size()
         << "\tbottom size: " << bottom_blo->shape(1) << " "
         << bottom_blo->shape(2) << " "
