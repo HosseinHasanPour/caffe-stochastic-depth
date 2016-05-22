@@ -50,6 +50,7 @@ void Net<Dtype>::standardResLayer(int & elts, int & idx, vector<int>* layers_cho
  	}
    	else{  // skip res block
         layerHelper_StochDep(elts, idx, layers_chosen, 10, 1, 10, false);
+        cout << "skipping standard block: " << elts << endl;
     }
 }
 
