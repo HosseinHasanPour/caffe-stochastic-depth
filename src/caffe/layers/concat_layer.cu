@@ -1,8 +1,8 @@
 #include <vector>
-#include <iostream>
+
 #include "caffe/layers/concat_layer.hpp"
 #include "caffe/util/math_functions.hpp"
-using namespace std;
+
 namespace caffe {
 
 template <typename Dtype>
@@ -27,7 +27,6 @@ __global__ void Concat(const int nthreads, const Dtype* in_data,
 template <typename Dtype>
 void ConcatLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
-    cout <<"concat bottom size: " <<  (*bottom)[0]->size() << endl;
   if (bottom.size() == 1) { return; }
   Dtype* top_data = top[0]->mutable_gpu_data();
   int offset_concat_axis = 0;
