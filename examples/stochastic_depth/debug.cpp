@@ -74,17 +74,7 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
 
 template <typename Dtype>
 void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int elt_incr, int idx_incr, int bottom_incr, bool use_top) {
-//    cout << "enterint layerHelper_StochDep" << endl;
-//    shared_ptr<Layer<Dtype> > layer = layers_[elts];
-//    cout << "got layers_[elts]" << endl;
-//    int next_layer_num;
-//    if (use_top){  next_layer_num = elts + bottom_incr + 1; }
-//    else { next_layer_num = elts + bottom_incr; }
-//    shared_ptr<Layer<Dtype> > next_layer = layers_[next_layer_num];
-//    cout << "got layers_[next_layer_num]" << endl;
-//
-//    cout << "layer num: " << elts << "\t" << layer->type() << "\tnext layer by top: " << next_layer_num << "\t" << next_layer->type() << endl;
-//
+
 
 
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
@@ -98,6 +88,22 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
 
     (*layers_chosen)[idx] = elts;
 
+    // prints
+
+    shared_ptr<Layer<Dtype> > curr_layer = layers_[elts];
+
+    vector<Blob<Dtype>*> og_bottom = bottom_vecs_[elts];
+    vector<Blob<Dtype>*> og_top = top_vecs_[elts];
+
+    cout << "og layer:\t" << curr_layer->type() << " " <<  elts << "\tbottom size: " << og_bottom.size() << "\ttop size: " << og_top.size() <<  endl;
+
+    vector<Blob<Dtype>*> curr_bottom = bottom_vecs_stochdept_[idx];
+    vector<Blob<Dtype>*> curr_top = top_vecs_stochdept_[idx];
+
+    cout << "my layer:\t" << curr_layer->type() << " " <<  elts << "\tbottom size: " << curr_bottom.size() << "\ttop size: " << curr_top.size() <<  endl;
+
+    // end prints
+    
     elts += elt_incr;
     idx += idx_incr;
 }
@@ -125,15 +131,8 @@ Dtype Net<Dtype>::ForwardFromTo_StochDep(vector<int>* layers_chosen) {
     	layer_idx = (*layers_chosen)[i];
         shared_ptr<Layer<Dtype> > curr_layer = layers_[layer_idx];
 
-        vector<Blob<Dtype>*> og_bottom = bottom_vecs_[layer_idx];
-        vector<Blob<Dtype>*> og_top = top_vecs_[layer_idx];
-
-        cout << "og layer:\t" << curr_layer->type() << " " <<  layer_idx << "\tbottom size: " << og_bottom.size() << "\ttop size: " << og_top.size() <<  endl;
-
         vector<Blob<Dtype>*> curr_bottom = bottom_vecs_stochdept_[i];
         vector<Blob<Dtype>*> curr_top = top_vecs_stochdept_[i];
-
-        cout << "my layer:\t" << curr_layer->type() << " " <<  layer_idx << "\tbottom size: " << curr_bottom.size() << "\ttop size: " << curr_top.size() <<  endl;
 
         Dtype layer_loss = curr_layer->Forward(curr_bottom, curr_top);
     	loss += layer_loss;
