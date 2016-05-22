@@ -125,8 +125,8 @@ Dtype Net<Dtype>::ForwardFromTo_StochDep(vector<int>* layers_chosen) {
     	layer_idx = (*layers_chosen)[i];
         shared_ptr<Layer<Dtype> > curr_layer = layers_[layer_idx];
 
-        vector<Blob<Dtype>*> og_bottom = bottom_vecs[layer_idx];
-        vector<Blob<Dtype>*> og_top = top_vecs[layer_idx];
+        vector<Blob<Dtype>*> og_bottom = bottom_vecs_[layer_idx];
+        vector<Blob<Dtype>*> og_top = top_vecs_[layer_idx];
 
         cout << "og layer:\t" << curr_layer->type() << " " <<  layer_idx << "\tbottom size: " << og_bottom.size() << "\ttop size: " << og_top.size() <<  endl;
 
