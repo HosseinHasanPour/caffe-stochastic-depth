@@ -49,7 +49,7 @@ void Net<Dtype>::standardResLayer(int & elts, int & idx, vector<int>* layers_cho
  	}
    	else{  // skip res block
         layerHelper_StochDep(elts, idx, layers_chosen, 10, 1, 10, false);
-        cout << "skipping standard block: " << elts << endl;
+//        cout << "skipping standard block: " << elts << endl;
     }
 }
 
@@ -65,7 +65,7 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, layers_chosen, 9, 1, 9, false);
-		cout << "skipping transition block: " << elts << endl;
+//		cout << "skipping transition block: " << elts << endl;
  	}   
 }
 
@@ -132,15 +132,8 @@ void Net<Dtype>::printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx) {
 template <typename Dtype>
 void Net<Dtype>::BackwardFromTo_StochDep(vector<int>* layers_chosen) {
   	int layer_idx;
-	int bottom_idx;
 	for (int i = layers_chosen->size() - 1; i >= 0; i--) {
 		layer_idx = (*layers_chosen)[i];
-		if (i == 0) {
-			bottom_idx = 0;
-		}
-		else {
-			bottom_idx = (*layers_chosen)[i-1] + 1;
-		}
     	if (layer_need_backward_[layer_idx]) {
       		layers_[layer_idx]->Backward(
           		top_vecs_stochdept_[i], bottom_need_backward_[layer_idx], bottom_vecs_stochdept_[i]);
@@ -241,8 +234,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
     if (param_.test_interval() && iter_ % param_.test_interval() == 0
         && (iter_ > 0 || param_.test_initialization())
         && Caffe::root_solver()) {
-      // I DISABLED THIS, REMEMBER TO UNCOMMENT LATER
-      //TestAll();
+      TestAll();
       if (requested_early_exit_) {
         // Break out of the while loop because stop was requested while testing.
         break;
@@ -259,9 +251,6 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
     
     for (int i = 0; i < param_.iter_size(); ++i) {
       net_->ChooseLayers_StochDep(layers_chosen);
-//		for (int i = 0; i < layers_chosen->size(); i++) {
-//         	cout << (*layers_chosen)[i] << ": " <<net()->layers()[(*layers_chosen)[i]]->type() << endl;
-//      	}
       loss += net_->ForwardBackward_StochDep(layers_chosen);
     }
     loss /= param_.iter_size();
