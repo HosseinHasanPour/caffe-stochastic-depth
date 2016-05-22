@@ -80,7 +80,9 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_
     else { next_layer_num = elts + bottom_incr; }
     shared_ptr<Layer<Dtype> > next_layer = layers_[next_layer_num];
 
-    cout << "layer num: " << elts << "\t" << layer->type() << "\tnext layer by top: " << next_layer_num << "\t" << next_layer->type();
+    cout << "layer num: " << elts << "\t" << layer->type() << "\tnext layer by top: " << next_layer_num << "\t" << next_layer->type() << endl;
+
+
 
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
 
