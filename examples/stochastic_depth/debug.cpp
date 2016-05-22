@@ -74,17 +74,17 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
 
 template <typename Dtype>
 void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int elt_incr, int idx_incr, int bottom_incr, bool use_top) {
-    cout << "enterint layerHelper_StochDep" << endl;
-    shared_ptr<Layer<Dtype> > layer = layers_[elts];
-    cout << "got layers_[elts]" << endl;
-    int next_layer_num;
-    if (use_top){  next_layer_num = elts + bottom_incr + 1; }
-    else { next_layer_num = elts + bottom_incr; }
-    shared_ptr<Layer<Dtype> > next_layer = layers_[next_layer_num];
-    cout << "got layers_[next_layer_num]" << endl;
-
-    cout << "layer num: " << elts << "\t" << layer->type() << "\tnext layer by top: " << next_layer_num << "\t" << next_layer->type() << endl;
-
+//    cout << "enterint layerHelper_StochDep" << endl;
+//    shared_ptr<Layer<Dtype> > layer = layers_[elts];
+//    cout << "got layers_[elts]" << endl;
+//    int next_layer_num;
+//    if (use_top){  next_layer_num = elts + bottom_incr + 1; }
+//    else { next_layer_num = elts + bottom_incr; }
+//    shared_ptr<Layer<Dtype> > next_layer = layers_[next_layer_num];
+//    cout << "got layers_[next_layer_num]" << endl;
+//
+//    cout << "layer num: " << elts << "\t" << layer->type() << "\tnext layer by top: " << next_layer_num << "\t" << next_layer->type() << endl;
+//
 
 
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
@@ -122,31 +122,20 @@ Dtype Net<Dtype>::ForwardFromTo_StochDep(vector<int>* layers_chosen) {
 	int layer_idx;
 //	int bottom_idx = 0;
   	for (int i = 0; i < layers_chosen->size(); i++) {
-        cout << "about to choose layer_idx" << endl;
     	layer_idx = (*layers_chosen)[i];
-        cout << "i: " << i << " \t layer_id: " << layer_idx << endl;
-//		if (i != 0) {
-//			bottom_idx = (*layers_chosen)[i-1] + 1;
-//		}
-//		if (bottom_idx != 0) {
-//		    cout << "i = " << i << "\t" << bottom_idx-1 << ":" << layers()[bottom_idx-1]->type() << " \t-->\t " << layer_idx << ":" << layers()[layer_idx]->type()  << endl;
-//        }
-//
-//		if (layer_idx == 101 || layer_idx == 48 || layer_idx == 112 || layer_idx == 59 || layer_idx == 69 || layer_idx == 122 || layer_idx == 110 || layer_idx == 111 || layer_idx == 120 || layer_idx == 121 || layer_idx == 57 || layer_idx == 58i || layer_idx == 96 || layer_idx == 88 || layer_idx == 87 ||  layer_idx == 95) {
-//            cout << "bottom vecs: "<< layer_idx << " " << layers()[layer_idx]->type() << endl;
-//            printvecblobs(bottom_vecs_, layer_idx);
-//            cout << "top vecs: " << layer_idx << " " << layers()[layer_idx]->type() <<  endl;
-//            printvecblobs(top_vecs_, layer_idx);
-//			cout << endl;
-//        }
         shared_ptr<Layer<Dtype> > curr_layer = layers_[layer_idx];
-        cout << "have curr_layer" << endl;
+
+        vector<Blob<Dtype>*> og_bottom = bottom_vecs[layer_idx];
+        vector<Blob<Dtype>*> og_top = top_vecs[layer_idx];
+
+        cout << "og layer:\t" << curr_layer->type() << " " <<  layer_idx << "\tbottom size: " << og_bottom.size() << "\ttop size: " << og_top.size() <<  endl;
+
         vector<Blob<Dtype>*> curr_bottom = bottom_vecs_stochdept_[i];
-        cout << "have curr_bottom" << endl;
         vector<Blob<Dtype>*> curr_top = top_vecs_stochdept_[i];
-        cout << "have curr_top" << endl;
+
+        cout << "my layer:\t" << curr_layer->type() << " " <<  layer_idx << "\tbottom size: " << curr_bottom.size() << "\ttop size: " << curr_top.size() <<  endl;
+
         Dtype layer_loss = curr_layer->Forward(curr_bottom, curr_top);
-        cout << "after loss_layer" << endl;
     	loss += layer_loss;
     	if (debug_info_) { ForwardDebugInfo(layer_idx); }
   	}
