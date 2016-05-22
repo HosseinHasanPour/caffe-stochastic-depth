@@ -74,6 +74,14 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
 
 template <typename Dtype>
 void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int elt_incr, int idx_incr, int bottom_incr, bool use_top) {
+    shared_ptr<Layer<Dtype> > layer = layers_[elts];
+    int next_layer_num;
+    if (use_top){  next_layer_num = elts + bottom_incr + 1; }
+    else { next_layer_num = elts + bottom_incr; }
+    shared_ptr<Layer<Dtype> > next_layer = layers_[next_layer_num];
+
+    cout << "layer num: " << elts << "\t" << layer->type() << "\tnext layer by top: " << next_layer_num << "\t" << next_layer->type();
+
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
 
     if (use_top) {
