@@ -11,6 +11,7 @@
 #include "caffe/util/io.hpp"
 #include "caffe/blob.hpp"
 #include "caffe/sgd_solvers.hpp"
+#include "debug.cpp"
 
 
 
