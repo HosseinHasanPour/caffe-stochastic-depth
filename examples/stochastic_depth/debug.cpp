@@ -236,7 +236,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         break;
       }
     }
-
+    cout << "callbacks_.size(): " << callbacks_.size() << endl;
     for (int i = 0; i < callbacks_.size(); ++i) {
       callbacks_[i]->on_start();
     }
@@ -276,6 +276,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         }
       }
     }
+      cout << "callbacks_.size()2: " << callbacks_.size() << endl;
     for (int i = 0; i < callbacks_.size(); ++i) {
       callbacks_[i]->on_gradients_ready();
     }
