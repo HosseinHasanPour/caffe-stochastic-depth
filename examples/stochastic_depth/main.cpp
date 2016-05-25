@@ -72,7 +72,7 @@ void Net<Dtype>::SetLearnableParams_StochDep(vector<int>* layers_chosen) {
         iter pair;
         if (layer_num_to_learnable_params_.count(layer_id) > 0) {
             pair = layer_num_to_learnable_params_.find(layer_id);
-            vector<Blob<Dtype> * > blob_vec =  *(int)pair->second;
+            vector<Blob<Dtype> * > blob_vec =  *pair->second;
             for ( int j = 0; j < blob_vec.size() ; j++){
                 learnable_params_stochdept_.push_back(blob_vec[j]);
             }
@@ -292,7 +292,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         for (int i = 0; i < param_.iter_size(); ++i) {
             net_->ChooseLayers_StochDep(layers_chosen);
             net_->SetLearnableParams_StochDep(layers_chosen);
-            for (int k = 0; k < net_->learnable_params_stochdept(); k++) {
+            for (int k = 0; k < net_->learnable_params_stochdept().size(); k++) {
                 cout << net_->learnable_params_stochdept()[k] << endl;
             }
             return;
