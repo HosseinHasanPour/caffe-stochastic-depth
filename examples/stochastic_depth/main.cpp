@@ -45,7 +45,7 @@ int main(int argc, char** argv)
         }
 		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
         for (int k = 0; k < layers[layer_id]->blobs().size(); k++){
-            cout << layers[layer_id]->blobs()[0] << " " << (*pair->second)[0];
+            cout << layers[layer_id]->blobs()[k] << " " << (*pair->second)[k];
         }
         cout << endl;
 	}
