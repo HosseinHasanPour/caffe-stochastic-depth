@@ -407,7 +407,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         for (int i = 0; i < callbacks_.size(); ++i) {
             callbacks_[i]->on_gradients_ready();
         }
-        ApplyUpdate_StochDep();
+        ApplyUpdate();
 
         // Increment the internal iter_ counter -- its value should always indicate
         // the number of times the weights have been updated.

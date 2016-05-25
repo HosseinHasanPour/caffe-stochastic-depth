@@ -174,7 +174,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
                                                   param_need_backward);
     }
     for (int param_id = 0; param_id < num_param_blobs; ++param_id) {
-      AppendParam(param, layer_id, param_id);
+      AppendParam_StochDep(param, layer_id, param_id);
     }
     // Finally, set the backward flag
     layer_need_backward_.push_back(need_backward);
