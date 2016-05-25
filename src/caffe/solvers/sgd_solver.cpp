@@ -61,7 +61,7 @@ void SGDSolver<Dtype>::ClipGradients_StochDep() {
     const vector<int>& learnable_params_ids = this->net_->learnable_params_ids_stochdept();
     Dtype sumsq_diff = 0;
     for (int i = 0; i < learnable_params_ids.size(); ++i) {
-        sumsq_diff += this->net_->learnable_params()[learnable_params_ids[i]];
+        sumsq_diff += this->net_->learnable_params()[learnable_params_ids[i]]->sumsq_diff();
     }
     const Dtype l2norm_diff = std::sqrt(sumsq_diff);
     if (l2norm_diff > clip_gradients) {
