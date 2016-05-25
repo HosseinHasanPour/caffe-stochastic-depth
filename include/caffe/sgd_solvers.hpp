@@ -27,9 +27,9 @@ class SGDSolver : public Solver<Dtype> {
 //---------------------------------------------- MY FUNCTIONS ---------------------------------------------------------
 
   virtual void ApplyUpdate_StochDep();
-  virtual void Normalize_StochDep();
-  virtual void Regularize_StochDep();
-  virtual void ComputeUpdateVAlue();
+//  virtual void Normalize_StochDep();
+//  virtual void Regularize_StochDep();
+//  virtual void ComputeUpdateVAlue();
 //---------------------------------------------------------------------------------------------------------------------
   void PreSolve();
   Dtype GetLearningRate();
