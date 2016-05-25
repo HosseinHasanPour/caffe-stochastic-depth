@@ -32,10 +32,10 @@ int main(int argc, char** argv)
     vector<int>* layers_chosen = new vector<int>();
     net->ChooseLayers_StochDep(layers_chosen);
 
-//	for (int i = 0; i < layers_chosen->size(); i++) {
-//		cout << (*layers_chosen)[i] << ": " <<layers[(*layers_chosen)[i]]->type() << endl;
-//	}
-    solver->Solve_StochDep();
+	for (int i = 0; i < layers_chosen->size(); i++) {
+		cout << (*layers_chosen)[i] << ": " <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
+	}
+//    solver->Solve_StochDep();
 }
 
 
@@ -239,7 +239,6 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
                 break;
             }
         }
-        cout << "callbacks_.size(): " << callbacks_.size() << endl;
         for (int i = 0; i < callbacks_.size(); ++i) {
             callbacks_[i]->on_start();
         }
@@ -279,7 +278,6 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
                 }
             }
         }
-        cout << "callbacks_.size()2: " << callbacks_.size() << endl;
         for (int i = 0; i < callbacks_.size(); ++i) {
             callbacks_[i]->on_gradients_ready();
         }

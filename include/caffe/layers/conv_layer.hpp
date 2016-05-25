@@ -46,7 +46,7 @@ class ConvolutionLayer : public BaseConvolutionLayer<Dtype> {
    *  actually padding.
    *  - dilation (\b optional, default 1). The filter
    *  dilation, given by dilation_size for equal dimensions for different
-   *  dilation. By default the convolution has dilation 1.
+   *  dilation. By defau  lt the convolution has dilation 1.
    *  - group (\b optional, default 1). The number of filter groups. Group
    *  convolution is a method for reducing parameterization by selectively
    *  connecting input and output channels. The input and output channel dimensions must be divisible
