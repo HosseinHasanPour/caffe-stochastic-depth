@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 //        cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
 //    }
 
-//    solver->Solve_StochDep();
+    solver->Solve_StochDep();
 }
 
 
