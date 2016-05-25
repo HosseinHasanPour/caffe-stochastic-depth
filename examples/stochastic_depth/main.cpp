@@ -37,10 +37,10 @@ int main(int argc, char** argv)
 
 	for (int i = 0; i < layers_chosen->size(); i++) {
         int mapvecsize = 0;
-        if (layer_num_to_learnable_params_.count(layer_id) > 0) {
+        if (layer_num_to_learnable_params().count(layer_id) > 0) {
             typedef typename map<int, vector<Blob<Dtype> *> *>::const_iterator iter;
             iter pair;
-            pair = layer_num_to_learnable_params_.find(layer_id);
+            pair = layer_num_to_learnable_params().find(layer_id);
             mapvecsize = pair->second->size();
         }
 		cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
