@@ -37,10 +37,10 @@ int main(int argc, char** argv)
 
 	for (int i = 0; i < layers_chosen->size(); i++) {
         int mapvecsize = 0;
-        if (layer_num_to_learnable_params().count(layer_id) > 0) {
+        if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
             typedef typename map<int, vector<Blob<Dtype> *> *>::const_iterator iter;
             iter pair;
-            pair = layer_num_to_learnable_params().find(layer_id);
+            pair = net->layer_num_to_learnable_params().find(layer_id);
             mapvecsize = pair->second->size();
         }
 		cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
@@ -58,12 +58,6 @@ int main(int argc, char** argv)
 
 
 //--------------------------------------- NET --------------------------------------------------------------------------
-
-template <typename Dtype>
-map<int, vector<Blob<Dtype>*>* >  Net<Dtype>::layer_num_to_learnable_params() {
-    return layer_num_to_learnable_params_;
-}
-
 
 template <typename Dtype>
 void Net<Dtype>::standardResLayer(int & elts, int & idx, vector<int>* layers_chosen, double ran, double prob) {
