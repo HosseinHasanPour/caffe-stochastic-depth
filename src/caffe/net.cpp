@@ -21,7 +21,112 @@
 
 namespace caffe {
 //--------------------------- MY FUNCTIONS -----------------------------------------------------------------------------
+    template <typename Dtype>
+void Net<Dtype>::AppendParam_StochDep(const NetParameter& param, const int layer_id,
+                                      const int param_id) {
+  const LayerParameter& layer_param = layers_[layer_id]->layer_param();
+  const int param_size = layer_param.param_size();
+  string param_name =
+          (param_size > param_id) ? layer_param.param(param_id).name() : "";
+  if (param_name.size()) {
+    param_display_names_.push_back(param_name);
+  } else {
+    ostringstream param_display_name;
+    param_display_name << param_id;
+    param_display_names_.push_back(param_display_name.str());
+  }
+  const int net_param_id = params_.size();
+  params_.push_back(layers_[layer_id]->blobs()[param_id]);
+  param_id_vecs_[layer_id].push_back(net_param_id);
+  param_layer_indices_.push_back(make_pair(layer_id, param_id));
+  ParamSpec default_param_spec;
+  const ParamSpec* param_spec = (layer_param.param_size() > param_id) ?
+                                &layer_param.param(param_id) : &default_param_spec;
+  if (!param_size || !param_name.size() || (param_name.size() &&
+                                            param_names_index_.find(param_name) == param_names_index_.end())) {
+    // This layer "owns" this parameter blob -- it is either anonymous
+    // (i.e., not given a param_name) or explicitly given a name that we
+    // haven't already seen.
+    param_owners_.push_back(-1);
+    if (param_name.size()) {
+      param_names_index_[param_name] = net_param_id;
+    }
+    const int learnable_param_id = learnable_params_.size();
+    learnable_params_.push_back(params_[net_param_id].get());
+    learnable_param_ids_.push_back(learnable_param_id);
+    has_params_lr_.push_back(param_spec->has_lr_mult());
+    has_params_decay_.push_back(param_spec->has_decay_mult());
+    params_lr_.push_back(param_spec->lr_mult());
+    params_weight_decay_.push_back(param_spec->decay_mult());
 
+    if (layer_num_to_learnable_params_.count(layer_id) == 0) {
+      vector<Blob<Dtype>* >* learn_vec = new vector<Blob<Dtype>* >(1);
+      learn_vec->push_back(params_[net_param_id].get());
+      layer_num_to_learnable_params_.insert(make_pair<int,vector<Blob<Dtype>* >* >( layer_id, learn_vec ) );
+    }
+    else {
+      typedef typename map<int, vector<Blob<Dtype>* >* >::const_iterator iter;
+      iter pair;
+      pair = layer_num_to_learnable_params_.find(layer_id);
+      pair->second->push_back(params_[net_param_id].get());
+    }
+  } else {
+    // Named param blob with name we've seen before: share params
+    const int owner_net_param_id = param_names_index_[param_name];
+    param_owners_.push_back(owner_net_param_id);
+    const pair<int, int>& owner_index =
+            param_layer_indices_[owner_net_param_id];
+    const int owner_layer_id = owner_index.first;
+    const int owner_param_id = owner_index.second;
+    LOG_IF(INFO, Caffe::root_solver()) << "Sharing parameters '" << param_name
+                                       << "' owned by "
+                                       << "layer '" << layer_names_[owner_layer_id] << "', param "
+                                       << "index " << owner_param_id;
+    Blob<Dtype>* this_blob = layers_[layer_id]->blobs()[param_id].get();
+    Blob<Dtype>* owner_blob =
+            layers_[owner_layer_id]->blobs()[owner_param_id].get();
+    const int param_size = layer_param.param_size();
+    if (param_size > param_id && (layer_param.param(param_id).share_mode() ==
+                                  ParamSpec_DimCheckMode_PERMISSIVE)) {
+      // Permissive dimension checking -- only check counts are the same.
+      CHECK_EQ(this_blob->count(), owner_blob->count())
+        << "Cannot share param '" << param_name << "' owned by layer '"
+        << layer_names_[owner_layer_id] << "' with layer '"
+        << layer_names_[layer_id] << "'; count mismatch.  Owner layer param "
+        << "shape is " << owner_blob->shape_string() << "; sharing layer "
+        << "shape is " << this_blob->shape_string();
+    } else {
+      // Strict dimension checking -- all dims must be the same.
+      CHECK(this_blob->shape() == owner_blob->shape())
+      << "Cannot share param '" << param_name << "' owned by layer '"
+      << layer_names_[owner_layer_id] << "' with layer '"
+      << layer_names_[layer_id] << "'; shape mismatch.  Owner layer param "
+      << "shape is " << owner_blob->shape_string() << "; sharing layer "
+      << "expects shape " << this_blob->shape_string();
+    }
+    const int learnable_param_id = learnable_param_ids_[owner_net_param_id];
+    learnable_param_ids_.push_back(learnable_param_id);
+    if (param_spec->has_lr_mult()) {
+      if (has_params_lr_[learnable_param_id]) {
+        CHECK_EQ(param_spec->lr_mult(), params_lr_[learnable_param_id])
+          << "Shared param '" << param_name << "' has mismatched lr_mult.";
+      } else {
+        has_params_lr_[learnable_param_id] = true;
+        params_lr_[learnable_param_id] = param_spec->lr_mult();
+      }
+    }
+    if (param_spec->has_decay_mult()) {
+      if (has_params_decay_[learnable_param_id]) {
+        CHECK_EQ(param_spec->decay_mult(),
+                 params_weight_decay_[learnable_param_id])
+          << "Shared param '" << param_name << "' has mismatched decay_mult.";
+      } else {
+        has_params_decay_[learnable_param_id] = true;
+        params_weight_decay_[learnable_param_id] = param_spec->decay_mult();
+      }
+    }
+  }
+}
 
 
 //--------------------------- ORIGINAL CAFFE ---------------------------------------------------------------------------
@@ -174,7 +279,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
                                                   param_need_backward);
     }
     for (int param_id = 0; param_id < num_param_blobs; ++param_id) {
-      AppendParam(param, layer_id, param_id);
+      AppendParam_StochDep(param, layer_id, param_id);
     }
     // Finally, set the backward flag
     layer_need_backward_.push_back(need_backward);
