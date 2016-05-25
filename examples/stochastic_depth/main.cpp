@@ -211,25 +211,27 @@ void Net<Dtype>::ChooseLayers_StochDep(vector<int>* layers_chosen){
     }
 
     srand(time(NULL));
-
-    standardResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)0)/13);
-    standardResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)1)/13);
-    standardResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)2)/13);
-    standardResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)3)/13);
-
-    transitionResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)4)/13);
-
-    standardResLayer(elts, idx,  layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)5)/13);
-    standardResLayer(elts, idx,  layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)6)/13);
-    standardResLayer(elts, idx,  layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)7)/13);
-    standardResLayer(elts, idx,  layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)8)/13);
-
-    transitionResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)9)/13);
-
-    standardResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)10)/13);
-    standardResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)11)/13);
-    standardResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)12)/13);
-    standardResLayer(elts, idx, layers_chosen, (double) rand()/RAND_MAX, 1 - 0.5*((double)13)/13);
+    double block_num  = 0;
+    double prob;
+    double ran;
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 4; j++) {
+            ran = (double) rand()/RAND_MAX;
+            prob = 1 - 0.5*(block_num)/13;
+            standardResLayer(elts, idx, layers_chosen, ran, prob);
+            block_num += 1.0;
+        }
+        ran = (double) rand()/RAND_MAX;
+        prob = 1 - 0.5*(block_num)/13;
+        transitionResLayer(elts, idx, layers_chosen, ran, prob);
+        block_num += 1.0;
+    }
+    for (int j = 0; j < 4; j++) {
+        ran = (double) rand()/RAND_MAX;
+        prob = 1 - 0.5*(block_num)/13;
+        standardResLayer(elts, idx, layers_chosen, ran, prob);
+        block_num += 1.0;
+    }
 
     for (int i = 0; i < 4; i++) {
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
