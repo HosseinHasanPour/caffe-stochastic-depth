@@ -38,6 +38,7 @@ int main(int argc, char** argv)
         int layer_id = (*layers_chosen)[i];
         int mapvecsize = 0;
         if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
+            cout << "yee" << endl;
             typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
             iter pair;
             pair = net->layer_num_to_learnable_params().find(layer_id);
