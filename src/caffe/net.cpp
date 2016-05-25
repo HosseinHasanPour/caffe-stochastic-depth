@@ -1032,6 +1032,13 @@ void Net<Dtype>::Update() {
 }
 
 template <typename Dtype>
+void Net<Dtype>::Update_StochDep() {
+    for (int i = 0; i < learnable_params_stochdept_.size(); ++i) {
+        learnable_params_stochdept_[i]->Update();
+    }
+}
+
+template <typename Dtype>
 void Net<Dtype>::ClearParamDiffs() {
   for (int i = 0; i < learnable_params_.size(); ++i) {
     Blob<Dtype>* blob = learnable_params_[i];

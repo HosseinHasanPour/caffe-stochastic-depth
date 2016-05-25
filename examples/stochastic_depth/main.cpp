@@ -63,12 +63,7 @@ int main(int argc, char** argv)
 
 //--------------------------------------- NET --------------------------------------------------------------------------
 
-template <typename Dtype>
-void Net<Dtype>::Update_StochDep() {
-    for (int i = 0; i < learnable_params_stochdept_.size(); ++i) {
-        learnable_params_stochdept_[i]->Update();
-    }
-}
+
 
 template <typename Dtype>
 void Net<Dtype>::SetLearnableParams_StochDep(vector<int>* layers_chosen) {
