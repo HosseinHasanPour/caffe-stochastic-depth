@@ -18,6 +18,7 @@
 using namespace caffe;
 using namespace std;
 
+template <typename Dtype>
 int main(int argc, char** argv)
 {
     Caffe::set_mode(Caffe::GPU);
@@ -33,17 +34,26 @@ int main(int argc, char** argv)
     vector<int>* layers_chosen = new vector<int>();
     net->ChooseLayers_StochDep(layers_chosen);
 
+
 	for (int i = 0; i < layers_chosen->size(); i++) {
-//		cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
+        int mapvecsize = 0;
+        if (layer_num_to_learnable_params_.count(layer_id) > 0) {
+            typedef typename map<int, vector<Blob<Dtype> *> *>::const_iterator iter;
+            iter pair;
+            pair = layer_num_to_learnable_params_.find(layer_id);
+            mapvecsize = pair->second->size();
+        }
+		cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
 	}
 
     cout << "layers; " << net->layers().size() << endl;
     cout << "params: " << net->params().size() << endl;
     cout << "learnable params: " << net->learnable_params().size() << endl;
-//    for (int j = 0; j < params_.size(); j++) {
-//        cout <<
+//    for (int j = 0; j < net->learnable_params().size(); j++) {
+//        cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
 //    }
-//    solver->Solve_StochDep();
+
+    solver->Solve_StochDep();
 }
 
 
