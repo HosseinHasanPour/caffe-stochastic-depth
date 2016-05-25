@@ -34,18 +34,18 @@ int main(int argc, char** argv)
     net->ChooseLayers_StochDep(layers_chosen);
 
 
-//	for (int i = 0; i < layers_chosen->size(); i++) {
-//        int layer_id = (*layers_chosen)[i];
-//        int mapvecsize = 0;
-//        if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
-//            cout << "yee" << endl;
-//            typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
-//            iter pair;
-//            pair = net->layer_num_to_learnable_params().find(layer_id);
-//            mapvecsize = (int)pair->second->size();
-//        }
-//		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
-//	}
+	for (int i = 0; i < layers_chosen->size(); i++) {
+        int layer_id = (*layers_chosen)[i];
+        int mapvecsize = 0;
+        if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
+            cout << "yee" << endl;
+            typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
+            iter pair;
+            pair = net->layer_num_to_learnable_params().find(layer_id);
+            mapvecsize = (int)pair->second->size();
+        }
+		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
+	}
 
     cout << "layers; " << net->layers().size() << endl;
     cout << "params: " << net->params().size() << endl;
@@ -274,13 +274,11 @@ void Net<Dtype>::AppendParam_StochDep(const NetParameter& param, const int layer
         params_weight_decay_.push_back(param_spec->decay_mult());
 
         if (layer_num_to_learnable_params_.count(layer_id) == 0) {
-            cout << "1" << endl;
             vector<Blob<Dtype>* >* learn_vec = new vector<Blob<Dtype>* >(1);
             learn_vec->push_back(params_[net_param_id].get());
             layer_num_to_learnable_params_.insert(make_pair<int,vector<Blob<Dtype>* >* >( layer_id, learn_vec ) );
         }
         else {
-            cout << "2" << endl;
             typedef typename map<int, vector<Blob<Dtype>* >* >::const_iterator iter;
             iter pair;
             pair = layer_num_to_learnable_params_.find(layer_id);
@@ -409,7 +407,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         for (int i = 0; i < callbacks_.size(); ++i) {
             callbacks_[i]->on_gradients_ready();
         }
-        ApplyUpdate();
+        ApplyUpdate_StochDep();
 
         // Increment the internal iter_ counter -- its value should always indicate
         // the number of times the weights have been updated.
