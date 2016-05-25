@@ -1769,4 +1769,3 @@ layer {
   bottom: "Data2"
   top: "SoftmaxWithLoss1"
 }
-
