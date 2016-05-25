@@ -20,8 +20,6 @@
 #include "caffe/test/test_caffe_main.hpp"
 
 namespace caffe {
-template <typename Dtype>
-
 //--------------------------- MY FUNCTIONS -----------------------------------------------------------------------------
 
 
