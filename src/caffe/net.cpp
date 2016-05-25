@@ -61,14 +61,19 @@ void Net<Dtype>::AppendParam_StochDep(const NetParameter& param, const int layer
 
     if (layer_num_to_learnable_params_.count(layer_id) == 0) {
       vector<Blob<Dtype>* >* learn_vec = new vector<Blob<Dtype>* >(0);
+      vector<int> idx_vec = new vector<int>(0);
       learn_vec->push_back(params_[net_param_id].get());
+      idx_vec->push_back(learnable_param_id);
       layer_num_to_learnable_params_.insert(make_pair<int,vector<Blob<Dtype>* >* >( layer_id, learn_vec ) );
+      layer_num_to_learnable_params_idxs.insert(make_pair<int, int>(layer_id, idx_vec));
     }
     else {
       typedef typename map<int, vector<Blob<Dtype>* >* >::const_iterator iter;
       iter pair;
       pair = layer_num_to_learnable_params_.find(layer_id);
       pair->second->push_back(params_[net_param_id].get());
+      pair = layer_num_to_learnable_params_idxs.find(layer_id);
+      pair->second->push_back(learnable_param_id);
     }
   } else {
     // Named param blob with name we've seen before: share params
@@ -364,6 +369,13 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
   ShareWeights();
   debug_info_ = param.debug_info();
   LOG_IF(INFO, Caffe::root_solver()) << "Network initialization done.";
+}
+
+template <typename Dtype>
+void Net<Dtype>::Update_StochDep() {
+  for (int i = 0; i < learnable_params_ids_stochdept_.size(); ++i) {
+    learnable_params_[learnable_params_ids_stochdept_[i]]->Update();
+  }
 }
 
 //--------------------------- ORIGINAL CAFFE ---------------------------------------------------------------------------
@@ -1031,12 +1043,6 @@ void Net<Dtype>::Update() {
   }
 }
 
-template <typename Dtype>
-void Net<Dtype>::Update_StochDep() {
-    for (int i = 0; i < learnable_params_stochdept_.size(); ++i) {
-        learnable_params_stochdept_[i]->Update();
-    }
-}
 
 template <typename Dtype>
 void Net<Dtype>::ClearParamDiffs() {

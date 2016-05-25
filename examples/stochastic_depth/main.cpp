@@ -78,16 +78,16 @@ int main(int argc, char** argv)
 
 template <typename Dtype>
 void Net<Dtype>::SetLearnableParams_StochDep(vector<int>* layers_chosen) {
-    learnable_params_stochdept_.resize(0);
+    learnable_params_ids_stochdept_.resize(0);
     for (int i = 0; i < (*layers_chosen).size(); i++) {
         int layer_id = (*layers_chosen)[i];
-        typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
+        typedef typename map<int, vector<int>* >::const_iterator iter;
         iter pair;
         if (layer_num_to_learnable_params_.count(layer_id) > 0) {
             pair = layer_num_to_learnable_params_.find(layer_id);
-            vector<Blob<Dtype> * > blob_vec =  *pair->second;
-            for ( int j = 0; j < blob_vec.size() ; j++){
-                learnable_params_stochdept_.push_back(blob_vec[j]);
+            vector<int> idx_vec =  *pair->second;
+            for ( int j = 0; j < idx_vec.size() ; j++){
+                learnable_params_ids_stochdept_.push_back(idx_vec[j]);
             }
         }
     }

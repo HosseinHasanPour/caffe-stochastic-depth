@@ -54,8 +54,8 @@ class Net {
       return layer_num_to_learnable_params_;
   }
   void SetLearnableParams_StochDep(vector<int>* layers_chosen);
-  inline const  vector<Blob<Dtype>*> learnable_params_stochdept() const {
-      return learnable_params_stochdept_;
+  inline const  vector<int> learnable_params_ids_stochdept() const {
+      return learnable_params_ids_stochdept_;
   }
   void Update_StochDep();
 //---------------------------------------------------------------------------------------------------------------------
@@ -280,7 +280,8 @@ class Net {
   vector<vector<Blob<Dtype>*> > bottom_vecs_stochdept_;
   vector<vector<Blob<Dtype>*> > top_vecs_stochdept_;
   map<int, vector<Blob<Dtype>*>* > layer_num_to_learnable_params_;
-  vector<Blob<Dtype>*> learnable_params_stochdept_;
+  map<int, vector<int>* > layer_num_to_learnable_params_idxs;
+  vector<int> learnable_params_ids_stochdept_;
 //--------------------------------------------------------------------------------------------------------------------
 
 
