@@ -18,7 +18,6 @@
 using namespace caffe;
 using namespace std;
 
-template <typename Dtype>
 int main(int argc, char** argv)
 {
     Caffe::set_mode(Caffe::GPU);
@@ -36,14 +35,15 @@ int main(int argc, char** argv)
 
 
 	for (int i = 0; i < layers_chosen->size(); i++) {
+        int layer_id = (*layers_chosen)[i];
         int mapvecsize = 0;
         if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
             typedef typename map<int, vector<Blob<Dtype> *> *>::const_iterator iter;
             iter pair;
             pair = net->layer_num_to_learnable_params().find(layer_id);
-            mapvecsize = pair->second->size();
+            mapvecsize = (int)pair->second->size();
         }
-		cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
+		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
 	}
 
     cout << "layers; " << net->layers().size() << endl;
