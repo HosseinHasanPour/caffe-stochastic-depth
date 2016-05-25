@@ -37,13 +37,13 @@ int main(int argc, char** argv)
     cout << "has_params_lr: " << net->has_params_lr().size()<< "\t";
     cout << "params_weight_decay: " << net->params_weight_decay().size()<< "\t";
     cout << "has_params_decay: " << net->has_params_decay().size() << endl;
-
-    for (int l = 0; l < net->params_lr().size(); l++) {
-        cout << net->params_lr()[l] << "\t";
-        cout << net->has_params_lr()[l] << "\t";
-        cout << net->params_weight_decay()[l] << "\t";
-        cout << net->has_params_decay()[l] << endl;
-    }
+//
+//    for (int l = 0; l < net->params_lr().size(); l++) {
+//        cout << net->params_lr()[l] << "\t";
+//        cout << net->has_params_lr()[l] << "\t";
+//        cout << net->params_weight_decay()[l] << "\t";
+//        cout << net->has_params_decay()[l] << endl;
+//    }
 
 //	for (int i = 0; i < layers_chosen->size(); i++) {
 //        int layer_id = (*layers_chosen)[i];
@@ -61,8 +61,8 @@ int main(int argc, char** argv)
 //        cout << endl;
 //	}
 //
-//    cout << "layers; " << net->layers().size() << endl;
-//    cout << "params: " << net->params().size() << endl;
+    cout << "layers; " << net->layers().size() << endl;
+    cout << "params: " << net->params().size() << endl;
 //    cout << "learnable params: " << net->learnable_params().size() << endl;
 //    for (int i = 0; j < net->learnable_params().size(); j++) {
 //        cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
