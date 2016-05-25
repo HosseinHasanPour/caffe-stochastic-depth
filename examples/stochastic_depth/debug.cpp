@@ -22,7 +22,7 @@ void transitionResLayer(int & elts, int & idx, vector<int>* layers_chosen, doubl
 //int main(int argc, char** argv)
 //{
 //	Caffe::set_mode(Caffe::GPU);
-//	
+//
 //	string param_file = "examples/stochastic_depth/solver.prototxt";
 //  	SolverParameter param;
 //  	ReadSolverParamsFromTextFileOrDie(param_file, &param);
