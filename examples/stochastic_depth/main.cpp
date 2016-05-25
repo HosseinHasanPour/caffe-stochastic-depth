@@ -34,28 +34,28 @@ int main(int argc, char** argv)
     net->ChooseLayers_StochDep(layers_chosen);
 
 
-//	for (int i = 0; i < layers_chosen->size(); i++) {
-//        int layer_id = (*layers_chosen)[i];
-//        int mapvecsize = 0;
-//        typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
-//        iter pair;
-//        if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
-//            pair = net->layer_num_to_learnable_params().find(layer_id);
-//            mapvecsize = (int)pair->second->size();
-//        }
-//		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
-//        for (int k = 0; k < layers[layer_id]->blobs().size(); k++){
-//            cout << layers[layer_id]->blobs()[k] << " " << (*pair->second)[k];
-//        }
-//        cout << endl;
-//	}
-//
-//    cout << "layers; " << net->layers().size() << endl;
-//    cout << "params: " << net->params().size() << endl;
-//    cout << "learnable params: " << net->learnable_params().size() << endl;
-//    for (int j = 0; j < net->learnable_params().size(); j++) {
-//        cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
-//    }
+	for (int i = 0; i < layers_chosen->size(); i++) {
+        int layer_id = (*layers_chosen)[i];
+        int mapvecsize = 0;
+        typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
+        iter pair;
+        if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
+            pair = net->layer_num_to_learnable_params().find(layer_id);
+            mapvecsize = (int)pair->second->size();
+        }
+		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
+        for (int k = 0; k < layers[layer_id]->blobs().size(); k++){
+            cout << layers[layer_id]->blobs()[k] << " " << (*pair->second)[k] << "\t";
+        }
+        cout << endl;
+	}
+
+    cout << "layers; " << net->layers().size() << endl;
+    cout << "params: " << net->params().size() << endl;
+    cout << "learnable params: " << net->learnable_params().size() << endl;
+    for (int j = 0; j < net->learnable_params().size(); j++) {
+        cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
+    }
 
     solver->Solve_StochDep();
 }
