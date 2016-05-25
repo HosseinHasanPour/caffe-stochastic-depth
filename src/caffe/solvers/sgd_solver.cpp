@@ -61,7 +61,7 @@ void SGDSolver<Dtype>::ClipGradients_StochDep() {
     const vector<int>& learnable_params_ids = this->net_->learnable_params_ids_stochdept();
     Dtype sumsq_diff = 0;
     for (int i = 0; i < learnable_params_ids.size(); ++i) {
-        sumsq_diff += net_->learnable_params()[learnable_params_ids[i]];
+        sumsq_diff += this->net_->learnable_params()[learnable_params_ids[i]];
     }
     const Dtype l2norm_diff = std::sqrt(sumsq_diff);
     if (l2norm_diff > clip_gradients) {
@@ -70,7 +70,7 @@ void SGDSolver<Dtype>::ClipGradients_StochDep() {
         << l2norm_diff << " > " << clip_gradients << ") "
         << "by scale factor " << scale_factor;
         for (int i = 0; i < learnable_params_ids.size(); ++i) {
-            net_->learnable_params()[learnable_params_ids[i]]->scale_diff(scale_factor);
+            this->net_->learnable_params()[learnable_params_ids[i]]->scale_diff(scale_factor);
         }
     }
 }
@@ -105,7 +105,6 @@ void SGDSolver<Dtype>::Normalize_StochDep(int param_id) {
 
 template <typename Dtype>
 void SGDSolver<Dtype>::ComputeUpdateValue_StochDep(int param_id, Dtype rate) {
-    const vector<int>& net_params = this->net_->learnable_params_ids_stochdept();
     const vector<Blob<Dtype>*>& learnable_params = this->net_->learnable_params();
     const vector<float>& net_params_lr = this->net_->params_lr();
     Dtype momentum = this->param_.momentum();

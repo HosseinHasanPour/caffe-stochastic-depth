@@ -61,19 +61,21 @@ void Net<Dtype>::AppendParam_StochDep(const NetParameter& param, const int layer
 
     if (layer_num_to_learnable_params_.count(layer_id) == 0) {
       vector<Blob<Dtype>* >* learn_vec = new vector<Blob<Dtype>* >(0);
-      vector<int> idx_vec = new vector<int>(0);
+      vector<int>* idx_vec = new vector<int>(0);
       learn_vec->push_back(params_[net_param_id].get());
       idx_vec->push_back(learnable_param_id);
       layer_num_to_learnable_params_.insert(make_pair<int,vector<Blob<Dtype>* >* >( layer_id, learn_vec ) );
-      layer_num_to_learnable_params_idxs.insert(make_pair<int, int>(layer_id, idx_vec));
+      layer_num_to_learnable_params_idxs.insert(make_pair<int, vector<int>*>(layer_id, idx_vec));
     }
     else {
       typedef typename map<int, vector<Blob<Dtype>* >* >::const_iterator iter;
       iter pair;
       pair = layer_num_to_learnable_params_.find(layer_id);
       pair->second->push_back(params_[net_param_id].get());
-      pair = layer_num_to_learnable_params_idxs.find(layer_id);
-      pair->second->push_back(learnable_param_id);
+      typedef typename map<int, vector<int>* >::const_iterator iter2;
+      iter2 pair2;
+      pair2 = layer_num_to_learnable_params_idxs.find(layer_id);
+      pair2->second->push_back(learnable_param_id);
     }
   } else {
     // Named param blob with name we've seen before: share params
