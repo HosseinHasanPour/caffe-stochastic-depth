@@ -25,8 +25,15 @@ namespace caffe {
 // in the solver parameter protocol buffer, and iter is the current iteration.
 
 
-
+#ifndef CPU_ONLY
+    template <typename Dtype>
+    void sgd_update_gpu(int N, Dtype* g, Dtype* h, Dtype momentum,
+                        Dtype local_rate);
+#endif
 //--------------------------------------- MY FUNCTIONS -----------------------------------------------------------------
+
+
+
 
 template <typename Dtype>
 void SGDSolver<Dtype>::ApplyUpdate_StochDep() {
@@ -384,11 +391,7 @@ void SGDSolver<Dtype>::Regularize(int param_id) {
   }
 }
 
-#ifndef CPU_ONLY
-template <typename Dtype>
-void sgd_update_gpu(int N, Dtype* g, Dtype* h, Dtype momentum,
-    Dtype local_rate);
-#endif
+
 
 template <typename Dtype>
 void SGDSolver<Dtype>::ComputeUpdateValue(int param_id, Dtype rate) {
