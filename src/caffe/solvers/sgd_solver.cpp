@@ -23,7 +23,6 @@ namespace caffe {
 //
 // where base_lr, max_iter, gamma, step, stepvalue and power are defined
 // in the solver parameter protocol buffer, and iter is the current iteration.
-template <typename Dtype>
 
 
 
