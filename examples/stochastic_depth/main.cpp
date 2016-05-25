@@ -53,9 +53,9 @@ int main(int argc, char** argv)
     cout << "layers; " << net->layers().size() << endl;
     cout << "params: " << net->params().size() << endl;
     cout << "learnable params: " << net->learnable_params().size() << endl;
-    for (int j = 0; j < net->learnable_params().size(); j++) {
-        cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
-    }
+//    for (int i = 0; j < net->learnable_params().size(); j++) {
+//        cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
+//    }
 
     solver->Solve_StochDep();
 }
