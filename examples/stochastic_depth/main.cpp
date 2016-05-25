@@ -34,18 +34,18 @@ int main(int argc, char** argv)
     net->ChooseLayers_StochDep(layers_chosen);
 
 
-	for (int i = 0; i < layers_chosen->size(); i++) {
-        int layer_id = (*layers_chosen)[i];
-        int mapvecsize = 0;
-        if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
-            cout << "yee" << endl;
-            typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
-            iter pair;
-            pair = net->layer_num_to_learnable_params().find(layer_id);
-            mapvecsize = (int)pair->second->size();
-        }
-		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
-	}
+//	for (int i = 0; i < layers_chosen->size(); i++) {
+//        int layer_id = (*layers_chosen)[i];
+//        int mapvecsize = 0;
+//        if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
+//            cout << "yee" << endl;
+//            typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
+//            iter pair;
+//            pair = net->layer_num_to_learnable_params().find(layer_id);
+//            mapvecsize = (int)pair->second->size();
+//        }
+//		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
+//	}
 
     cout << "layers; " << net->layers().size() << endl;
     cout << "params: " << net->params().size() << endl;
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 //        cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
 //    }
 
-    solver->Solve_StochDep();
+//    solver->Solve_StochDep();
 }
 
 
