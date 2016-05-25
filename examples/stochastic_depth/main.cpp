@@ -102,7 +102,7 @@ void Net<Dtype>::standardResLayer(int & elts, int & idx, vector<int>* layers_cho
     }
     else{  // skip res block
         layerHelper_StochDep(elts, idx, layers_chosen, 10, 1, 10, false);
-//        cout << "skipping standard block: " << elts << endl;
+        cout << "skipping standard block: " << elts << endl;
     }
 }
 
@@ -118,7 +118,7 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, layers_chosen, 9, 1, 9, false);
-//		cout << "skipping transition block: " << elts << endl;
+		cout << "skipping transition block: " << elts << endl;
     }
 }
 
@@ -210,7 +210,7 @@ void Net<Dtype>::ChooseLayers_StochDep(vector<int>* layers_chosen){
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
     }
 
-    srand(time(NULL));
+    srand((unsigned)time(NULL));
     double block_num  = 0;
     double prob;
     double ran;
@@ -307,7 +307,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         for (int i = 0; i < param_.iter_size(); ++i) {
             net_->ChooseLayers_StochDep(layers_chosen);
             net_->SetLearnableParams_StochDep(layers_chosen);
-//            cout << "learnable_params_stochdep: " << net_->learnable_params_stochdept().size() <<"\t layers chosen: " << (*layers_chosen).size() << endl;
+            cout << "learnable_params_stochdep: " << net_->learnable_params_ids_stochdept().size() <<"\t layers chosen: " << (*layers_chosen).size() << endl;
             loss += net_->ForwardBackward_StochDep(layers_chosen);
         }
         loss /= param_.iter_size();
