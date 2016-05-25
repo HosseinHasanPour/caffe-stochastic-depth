@@ -60,7 +60,7 @@ void Net<Dtype>::AppendParam_StochDep(const NetParameter& param, const int layer
     params_weight_decay_.push_back(param_spec->decay_mult());
 
     if (layer_num_to_learnable_params_.count(layer_id) == 0) {
-      vector<Blob<Dtype>* >* learn_vec = new vector<Blob<Dtype>* >(1);
+      vector<Blob<Dtype>* >* learn_vec = new vector<Blob<Dtype>* >(0);
       learn_vec->push_back(params_[net_param_id].get());
       layer_num_to_learnable_params_.insert(make_pair<int,vector<Blob<Dtype>* >* >( layer_id, learn_vec ) );
     }
@@ -128,28 +128,10 @@ void Net<Dtype>::AppendParam_StochDep(const NetParameter& param, const int layer
   }
 }
 
-
-//--------------------------- ORIGINAL CAFFE ---------------------------------------------------------------------------
-
-template <typename Dtype>
-Net<Dtype>::Net(const NetParameter& param, const Net* root_net)
-    : root_net_(root_net) {
-  Init(param);
-}
-
-template <typename Dtype>
-Net<Dtype>::Net(const string& param_file, Phase phase, const Net* root_net)
-    : root_net_(root_net) {
-  NetParameter param;
-  ReadNetParamsFromTextFileOrDie(param_file, &param);
-  param.mutable_state()->set_phase(phase);
-  Init(param);
-}
-
 template <typename Dtype>
 void Net<Dtype>::Init(const NetParameter& in_param) {
   CHECK(Caffe::root_solver() || root_net_)
-      << "root_net_ needs to be set for all non-root solvers";
+  << "root_net_ needs to be set for all non-root solvers";
   // Set phase from the state.
   phase_ = in_param.state().phase();
   // Filter layers based on their include/exclude rules and
@@ -157,8 +139,8 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
   NetParameter filtered_param;
   FilterNet(in_param, &filtered_param);
   LOG_IF(INFO, Caffe::root_solver())
-      << "Initializing net from parameters: " << std::endl
-      << filtered_param.DebugString();
+  << "Initializing net from parameters: " << std::endl
+  << filtered_param.DebugString();
   // Create a copy of filtered_param with splits added where necessary.
   NetParameter param;
   InsertSplits(filtered_param, &param);
@@ -177,7 +159,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
   for (int layer_id = 0; layer_id < param.layer_size(); ++layer_id) {
     // For non-root solvers, whether this layer is shared from root_net_.
     bool share_from_root = !Caffe::root_solver()
-        && root_net_->layers_[layer_id]->ShareInParallel();
+                           && root_net_->layers_[layer_id]->ShareInParallel();
     // Inherit phase from net if unset.
     if (!param.layer(layer_id).has_phase()) {
       param.mutable_layer(layer_id)->set_phase(phase_);
@@ -186,9 +168,9 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     const LayerParameter& layer_param = param.layer(layer_id);
     if (layer_param.propagate_down_size() > 0) {
       CHECK_EQ(layer_param.propagate_down_size(),
-          layer_param.bottom_size())
-          << "propagate_down param must be specified "
-          << "either 0 or bottom_size times ";
+               layer_param.bottom_size())
+        << "propagate_down param must be specified "
+        << "either 0 or bottom_size times ";
     }
     if (share_from_root) {
       LOG(INFO) << "Sharing layer " << layer_param.name() << " from root net";
@@ -199,7 +181,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     }
     layer_names_.push_back(layer_param.name());
     LOG_IF(INFO, Caffe::root_solver())
-        << "Creating Layer " << layer_param.name();
+    << "Creating Layer " << layer_param.name();
     bool need_backward = false;
 
     // Figure out this layer's input and output
@@ -226,7 +208,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     Layer<Dtype>* layer = layers_[layer_id].get();
     if (layer->AutoTopBlobs()) {
       const int needed_num_top =
-          std::max(layer->MinTopBlobs(), layer->ExactNumTopBlobs());
+              std::max(layer->MinTopBlobs(), layer->ExactNumTopBlobs());
       for (; num_top < needed_num_top; ++num_top) {
         // Add "anonymous" top blobs -- do not modify available_blobs or
         // blob_name_to_idx as we don't want these blobs to be usable as input
@@ -242,37 +224,37 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
       for (int top_id = 0; top_id < base_top.size(); ++top_id) {
         this_top[top_id]->ReshapeLike(*base_top[top_id]);
         LOG(INFO) << "Created top blob " << top_id << " (shape: "
-            << this_top[top_id]->shape_string() <<  ") for shared layer "
-            << layer_param.name();
+        << this_top[top_id]->shape_string() <<  ") for shared layer "
+        << layer_param.name();
       }
     } else {
       layers_[layer_id]->SetUp(bottom_vecs_[layer_id], top_vecs_[layer_id]);
     }
     LOG_IF(INFO, Caffe::root_solver())
-        << "Setting up " << layer_names_[layer_id];
+    << "Setting up " << layer_names_[layer_id];
     for (int top_id = 0; top_id < top_vecs_[layer_id].size(); ++top_id) {
       if (blob_loss_weights_.size() <= top_id_vecs_[layer_id][top_id]) {
         blob_loss_weights_.resize(top_id_vecs_[layer_id][top_id] + 1, Dtype(0));
       }
       blob_loss_weights_[top_id_vecs_[layer_id][top_id]] = layer->loss(top_id);
       LOG_IF(INFO, Caffe::root_solver())
-          << "Top shape: " << top_vecs_[layer_id][top_id]->shape_string();
+      << "Top shape: " << top_vecs_[layer_id][top_id]->shape_string();
       if (layer->loss(top_id)) {
         LOG_IF(INFO, Caffe::root_solver())
-            << "    with loss weight " << layer->loss(top_id);
+        << "    with loss weight " << layer->loss(top_id);
       }
       memory_used_ += top_vecs_[layer_id][top_id]->count();
     }
     LOG_IF(INFO, Caffe::root_solver())
-        << "Memory required for data: " << memory_used_ * sizeof(Dtype);
+    << "Memory required for data: " << memory_used_ * sizeof(Dtype);
     const int param_size = layer_param.param_size();
     const int num_param_blobs = layers_[layer_id]->blobs().size();
     CHECK_LE(param_size, num_param_blobs)
-        << "Too many params specified for layer " << layer_param.name();
+      << "Too many params specified for layer " << layer_param.name();
     ParamSpec default_param_spec;
     for (int param_id = 0; param_id < num_param_blobs; ++param_id) {
       const ParamSpec* param_spec = (param_id < param_size) ?
-          &layer_param.param(param_id) : &default_param_spec;
+                                    &layer_param.param(param_id) : &default_param_spec;
       const bool param_need_backward = param_spec->lr_mult() != 0;
       need_backward |= param_need_backward;
       layers_[layer_id]->set_param_propagate_down(param_id,
@@ -317,7 +299,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     if (layer_need_backward_[layer_id] && layer_skip_propagate_down) {
       layer_need_backward_[layer_id] = false;
       for (int bottom_id = 0; bottom_id < bottom_vecs_[layer_id].size();
-               ++bottom_id) {
+           ++bottom_id) {
         bottom_need_backward_[layer_id][bottom_id] = false;
       }
     }
@@ -327,21 +309,21 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
         LOG(INFO) << layer_names_[layer_id] << " needs backward computation.";
       } else {
         LOG(INFO) << layer_names_[layer_id]
-            << " does not need backward computation.";
+        << " does not need backward computation.";
       }
     }
     for (int bottom_id = 0; bottom_id < bottom_vecs_[layer_id].size();
          ++bottom_id) {
       if (layer_contributes_loss) {
         const string& blob_name =
-            blob_names_[bottom_id_vecs_[layer_id][bottom_id]];
+                blob_names_[bottom_id_vecs_[layer_id][bottom_id]];
         blobs_under_loss.insert(blob_name);
       } else {
         bottom_need_backward_[layer_id][bottom_id] = false;
       }
       if (!bottom_need_backward_[layer_id][bottom_id]) {
         const string& blob_name =
-                   blob_names_[bottom_id_vecs_[layer_id][bottom_id]];
+                blob_names_[bottom_id_vecs_[layer_id][bottom_id]];
         blobs_skip_backp.insert(blob_name);
       }
     }
@@ -353,11 +335,11 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
       for (int bottom_id = 0;
            bottom_id < bottom_need_backward_[layer_id].size(); ++bottom_id) {
         bottom_need_backward_[layer_id][bottom_id] =
-            bottom_need_backward_[layer_id][bottom_id] ||
-            layers_[layer_id]->AllowForceBackward(bottom_id);
+                bottom_need_backward_[layer_id][bottom_id] ||
+                layers_[layer_id]->AllowForceBackward(bottom_id);
         blob_need_backward_[bottom_id_vecs_[layer_id][bottom_id]] =
-            blob_need_backward_[bottom_id_vecs_[layer_id][bottom_id]] ||
-            bottom_need_backward_[layer_id][bottom_id];
+                blob_need_backward_[bottom_id_vecs_[layer_id][bottom_id]] ||
+                bottom_need_backward_[layer_id][bottom_id];
       }
       for (int param_id = 0; param_id < layers_[layer_id]->blobs().size();
            ++param_id) {
@@ -367,9 +349,9 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
   }
   // In the end, all remaining blobs are considered output blobs.
   for (set<string>::iterator it = available_blobs.begin();
-      it != available_blobs.end(); ++it) {
+       it != available_blobs.end(); ++it) {
     LOG_IF(INFO, Caffe::root_solver())
-        << "This network produces output " << *it;
+    << "This network produces output " << *it;
     net_output_blobs_.push_back(blobs_[blob_name_to_idx[*it]].get());
     net_output_blob_indices_.push_back(blob_name_to_idx[*it]);
   }
@@ -382,7 +364,26 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
   ShareWeights();
   debug_info_ = param.debug_info();
   LOG_IF(INFO, Caffe::root_solver()) << "Network initialization done.";
+}    
+
+//--------------------------- ORIGINAL CAFFE ---------------------------------------------------------------------------
+
+template <typename Dtype>
+Net<Dtype>::Net(const NetParameter& param, const Net* root_net)
+    : root_net_(root_net) {
+  Init(param);
 }
+
+template <typename Dtype>
+Net<Dtype>::Net(const string& param_file, Phase phase, const Net* root_net)
+    : root_net_(root_net) {
+  NetParameter param;
+  ReadNetParamsFromTextFileOrDie(param_file, &param);
+  param.mutable_state()->set_phase(phase);
+  Init(param);
+}
+
+
 
 template <typename Dtype>
 void Net<Dtype>::FilterNet(const NetParameter& param,
