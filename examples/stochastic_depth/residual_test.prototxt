@@ -1753,6 +1753,16 @@ layer {
   }
 }
 layer {
+  name: "Accuracy"
+  type: "Accuracy"
+  bottom: "InnerProduct1"
+  bottom: "Data2"
+  top: "Accuracy"
+  include {
+    phase: TEST
+  }
+}
+layer {
   name: "SoftmaxWithLoss1"
   type: "SoftmaxWithLoss"
   bottom: "InnerProduct1"
