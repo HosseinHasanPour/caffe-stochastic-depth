@@ -274,11 +274,13 @@ void Net<Dtype>::AppendParam_StochDep(const NetParameter& param, const int layer
         params_weight_decay_.push_back(param_spec->decay_mult());
 
         if (layer_num_to_learnable_params_.count(layer_id) == 0) {
+            cout << 1 << endl;
             vector<Blob<Dtype>* >* learn_vec = new vector<Blob<Dtype>* >(1);
             learn_vec->push_back(params_[net_param_id].get());
             layer_num_to_learnable_params_.insert(make_pair<int,vector<Blob<Dtype>* >* >( layer_id, learn_vec ) );
         }
         else {
+            cout << 2 << endl;
             typedef typename map<int, vector<Blob<Dtype>* >* >::const_iterator iter;
             iter pair;
             pair = layer_num_to_learnable_params_.find(layer_id);
