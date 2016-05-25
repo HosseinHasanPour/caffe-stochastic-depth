@@ -91,7 +91,7 @@ void Net<Dtype>::standardResLayer(int & elts, int & idx, vector<int>* layers_cho
     }
     else{  // skip res block
         layerHelper_StochDep(elts, idx, layers_chosen, 10, 1, 10, false);
-//        cout << "skipping standard block: " << elts << endl;
+        cout << "skipping standard block: " << elts << endl;
     }
 }
 
@@ -107,7 +107,7 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, layers_chosen, 9, 1, 9, false);
-//		cout << "skipping transition block: " << elts << endl;
+		cout << "skipping transition block: " << elts << endl;
     }
 }
 
