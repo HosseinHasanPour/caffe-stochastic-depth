@@ -33,10 +33,10 @@ int main(int argc, char** argv)
     vector<int>* layers_chosen = new vector<int>();
     net->ChooseLayers_StochDep(layers_chosen);
 
-    cout << "params_lr: " << net->params_lr().size();
-    cout << "has_params_lr: " << net->has_params_lr().size();
-    cout << "params_weight_decay: " << net->params_weight_decay().size();
-    cout << "has_params_decay: " << net->has_params_decay().size();
+    cout << "params_lr: " << net->params_lr().size() << "\t";
+    cout << "has_params_lr: " << net->has_params_lr().size()<< "\t";
+    cout << "params_weight_decay: " << net->params_weight_decay().size()<< "\t";
+    cout << "has_params_decay: " << net->has_params_decay().size() << endl;
 
 
 //	for (int i = 0; i < layers_chosen->size(); i++) {
