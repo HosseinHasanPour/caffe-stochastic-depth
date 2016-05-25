@@ -37,14 +37,17 @@ int main(int argc, char** argv)
 	for (int i = 0; i < layers_chosen->size(); i++) {
         int layer_id = (*layers_chosen)[i];
         int mapvecsize = 0;
+        typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
+        iter pair;
         if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
-            cout << "yee" << endl;
-            typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
-            iter pair;
             pair = net->layer_num_to_learnable_params().find(layer_id);
             mapvecsize = (int)pair->second->size();
         }
 		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
+        for (int k = 0; k < layers[layer_id]->blobs().size(); k++){
+            cout << layers[layer_id]->blobs()[0] << " " << (*pair->second)[0];
+        }
+        cout << endl;
 	}
 
     cout << "layers; " << net->layers().size() << endl;
