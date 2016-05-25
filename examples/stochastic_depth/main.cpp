@@ -84,7 +84,7 @@ void Net<Dtype>::SetLearnableParams_StochDep(vector<int>* layers_chosen) {
         typedef typename map<int, vector<int>* >::const_iterator iter;
         iter pair;
         if (layer_num_to_learnable_params_.count(layer_id) > 0) {
-            pair = layer_num_to_learnable_params_.find(layer_id);
+            pair = layer_num_to_learnable_params_idxs.find(layer_id);
             vector<int> idx_vec =  *pair->second;
             for ( int j = 0; j < idx_vec.size() ; j++){
                 learnable_params_ids_stochdept_.push_back(idx_vec[j]);
