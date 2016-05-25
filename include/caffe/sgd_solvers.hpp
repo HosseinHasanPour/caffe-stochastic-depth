@@ -26,7 +26,7 @@ class SGDSolver : public Solver<Dtype> {
  protected:
 //---------------------------------------------- MY FUNCTIONS ---------------------------------------------------------
 
-  virtual void ApplyUpdate_StochDep();
+//  virtual void ApplyUpdate_StochDep();
 //  virtual void Normalize_StochDep();
 //  virtual void Regularize_StochDep();
 //  virtual void ComputeUpdateVAlue();
