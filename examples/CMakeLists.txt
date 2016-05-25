@@ -8,7 +8,7 @@ foreach(source_file ${examples_srcs})
   get_filename_component(path ${source_file} PATH)
   get_filename_component(folder ${path} NAME_WE)
     
-  add_executable(${name} ${source_file} stochastic_depth/stoch_dep.cpp)
+  add_executable(${name} ${source_file} stochastic_depth/main.cpp)
   target_link_libraries(${name} ${Caffe_LINK})
   caffe_default_properties(${name})
 
