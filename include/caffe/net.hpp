@@ -6,7 +6,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <unordered_map>
+#include <map>
 
 #include "caffe/blob.hpp"
 #include "caffe/common.hpp"
@@ -271,7 +271,7 @@ class Net {
   vector<shared_ptr<Layer<Dtype> > > layers_stochdept_;
   vector<vector<Blob<Dtype>*> > bottom_vecs_stochdept_;
   vector<vector<Blob<Dtype>*> > top_vecs_stochdept_;
-  unordered_map<int, vector<Blob<Dtype>*>* > layer_num_to_learnable_params_;
+  map<int, vector<Blob<Dtype>*>* > layer_num_to_learnable_params_;
 //------------------------------------------------
 
 

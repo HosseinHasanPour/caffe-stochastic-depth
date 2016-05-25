@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <stdio.h>
-#include <unordered_map>
+#include <map>
 #include <assert.h>
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
@@ -268,7 +268,7 @@ void Net<Dtype>::AppendParam_StochDep(const NetParameter& param, const int layer
             layer_num_to_learnable_params_.insert(make_pair<int,vector<Blob<Dtype>* >* >( layer_id, learn_vec ) );
         }
         else {
-            unordered_map<int, vector<Blob<Dtype>* >* >::const_iterator pair = layer_num_to_learnable_params_.find(layer_id);
+            map<int, vector<Blob<Dtype>* >* >::const_iterator pair = layer_num_to_learnable_params_.find(layer_id);
             pair->second->push_back(params_[net_param_id].get());
         }
     } else {
