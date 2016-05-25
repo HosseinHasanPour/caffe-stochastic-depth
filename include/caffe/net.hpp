@@ -50,9 +50,7 @@ class Net {
   void transitionResLayer(int & elts, int& idx, vector<int>* layers_chosen, double ran, double prob);
   void layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int  elt_incr, int  idx_incr,int  bottom_incr, bool usetop);
   void AppendParam_StochDep(const NetParameter& param, const int layer_id, const int param_id);
-  inline const map<int, vector<Blob<Dtype>*>* >  layer_num_to_learnable_params() const {
-      return layer_num_to_learnable_params_;
-  }
+  map<int, vector<Blob<Dtype>*>* >  layer_num_to_learnable_params();
 //---------------------------------------------------------------------------------------------------------------------
 
   /// @brief DEPRECATED; use Forward() instead.

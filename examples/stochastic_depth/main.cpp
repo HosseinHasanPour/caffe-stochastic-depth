@@ -60,6 +60,12 @@ int main(int argc, char** argv)
 //--------------------------------------- NET --------------------------------------------------------------------------
 
 template <typename Dtype>
+map<int, vector<Blob<Dtype>*>* >  Net<Dtype>::layer_num_to_learnable_params() {
+    return layer_num_to_learnable_params_;
+}
+
+
+template <typename Dtype>
 void Net<Dtype>::standardResLayer(int & elts, int & idx, vector<int>* layers_chosen, double ran, double prob) {
     if (ran < prob){ // include res block
         for (int i = 0; i < 10; i++){
