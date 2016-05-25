@@ -36,9 +36,9 @@ int main(int argc, char** argv)
 //		cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
 	}
 
-    cour << "layers; " << layers_.size() << endl;
-    cout << "params: " << params_.size() << endl;
-    cout << "learnable params: " << learnable_params_.size() << endl;
+    cout << "layers; " << net->layers().size() << endl;
+    cout << "params: " << net->params().size() << endl;
+    cout << "learnable params: " << net->learnable_params().size() << endl;
 //    for (int j = 0; j < params_.size(); j++) {
 //        cout <<
 //    }
