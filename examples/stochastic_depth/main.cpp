@@ -33,6 +33,11 @@ int main(int argc, char** argv)
     vector<int>* layers_chosen = new vector<int>();
     net->ChooseLayers_StochDep(layers_chosen);
 
+    cout << "param_lr: " << net->param_lr().size();
+    cout << "has_param_lr: " << net->has_param_lr().size();
+    cout << "param_weight_decay: " << net->param_weight_decay().size();
+    cout << "has_params_decay: " << net->has_params_decay().size();
+
 
 //	for (int i = 0; i < layers_chosen->size(); i++) {
 //        int layer_id = (*layers_chosen)[i];
@@ -57,7 +62,7 @@ int main(int argc, char** argv)
 //        cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
 //    }
 
-    solver->Solve_StochDep();
+//    solver->Solve_StochDep();
 }
 
 
@@ -91,7 +96,7 @@ void Net<Dtype>::standardResLayer(int & elts, int & idx, vector<int>* layers_cho
     }
     else{  // skip res block
         layerHelper_StochDep(elts, idx, layers_chosen, 10, 1, 10, false);
-        cout << "skipping standard block: " << elts << endl;
+//        cout << "skipping standard block: " << elts << endl;
     }
 }
 
@@ -107,7 +112,7 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, vector<int>* layers_ch
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, layers_chosen, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, layers_chosen, 9, 1, 9, false);
-		cout << "skipping transition block: " << elts << endl;
+//		cout << "skipping transition block: " << elts << endl;
     }
 }
 
@@ -294,7 +299,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         for (int i = 0; i < param_.iter_size(); ++i) {
             net_->ChooseLayers_StochDep(layers_chosen);
             net_->SetLearnableParams_StochDep(layers_chosen);
-            cout << "learnable_params_stochdep: " << net_->learnable_params_stochdept().size() <<"\t layers chosen: " << (*layers_chosen).size() << endl;
+//            cout << "learnable_params_stochdep: " << net_->learnable_params_stochdept().size() <<"\t layers chosen: " << (*layers_chosen).size() << endl;
             loss += net_->ForwardBackward_StochDep(layers_chosen);
         }
         loss /= param_.iter_size();
