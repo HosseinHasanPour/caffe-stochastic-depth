@@ -402,7 +402,7 @@ void Solver<Dtype>::Solve_StochDep(const char* resume_file) {
 //------------------------------------------------ SGD SOLVER ----------------------------------------------------------
 
 template <typename Dtype>
-void SGDSolver<Dtype>::ApplyUpdate_StochDep_blabla() {
+void SGDSolver<Dtype>::ApplyUpdate_StochDep() {
     CHECK(Caffe::root_solver());
     Dtype rate = GetLearningRate();
     if (this->param_.display() && this->iter_ % this->param_.display() == 0) {
