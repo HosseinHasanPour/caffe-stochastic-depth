@@ -57,6 +57,7 @@ class Net {
   inline const  vector<Blob<Dtype>*> learnable_params_stochdept() const {
       return learnable_params_stochdept_;
   }
+  void Update_StochDep();
 //---------------------------------------------------------------------------------------------------------------------
 
   /// @brief DEPRECATED; use Forward() instead.

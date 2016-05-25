@@ -64,6 +64,13 @@ int main(int argc, char** argv)
 //--------------------------------------- NET --------------------------------------------------------------------------
 
 template <typename Dtype>
+void Net<Dtype>::Update_StochDep() {
+    for (int i = 0; i < learnable_params_stochdept_.size(); ++i) {
+        learnable_params_stochdept_[i]->Update();
+    }
+}
+
+template <typename Dtype>
 void Net<Dtype>::SetLearnableParams_StochDep(vector<int>* layers_chosen) {
     learnable_params_stochdept_.resize(0);
     for (int i = 0; i < (*layers_chosen).size(); i++) {
@@ -323,7 +330,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         for (int i = 0; i < callbacks_.size(); ++i) {
             callbacks_[i]->on_gradients_ready();
         }
-        ApplyUpdate();
+        ApplyUpdate_StochDep();
 
         // Increment the internal iter_ counter -- its value should always indicate
         // the number of times the weights have been updated.
