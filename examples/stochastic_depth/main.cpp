@@ -294,7 +294,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         for (int i = 0; i < param_.iter_size(); ++i) {
             net_->ChooseLayers_StochDep(layers_chosen);
             net_->SetLearnableParams_StochDep(layers_chosen);
-            cout << "learnable_params_stochdep: " << net_->SetLearnableParams_StochDep().size() <<"\t layers chosen: " << (*layers_chosen).size() << endl;
+            cout << "learnable_params_stochdep: " << net_->learnable_params_stochdept().size() <<"\t layers chosen: " << (*layers_chosen).size() << endl;
             loss += net_->ForwardBackward_StochDep(layers_chosen);
         }
         loss /= param_.iter_size();
