@@ -50,7 +50,7 @@ class Solver {
 //------------------------------------------- MY FUNCTIONS -----------------------------------------------------------
    void Solve_StochDep(const char* resume_file = NULL);
    void Step_StochDep(int, std::vector<int>*);
-   virtual void ApplyUpdate_StochDep() = 0;
+//   virtual void ApplyUpdate_StochDep() = 0;
 //---------------------------------------------------------------------------------------------------------------------
 
 
