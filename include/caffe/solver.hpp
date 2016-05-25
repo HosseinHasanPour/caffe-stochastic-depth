@@ -47,10 +47,11 @@ class Solver {
   void InitTrainNet();
   void InitTestNets();
 
-//----------- MY FUNCTIONS ------------
+//------------------------------------------- MY FUNCTIONS -----------------------------------------------------------
    void Solve_StochDep(const char* resume_file = NULL);
    void Step_StochDep(int, std::vector<int>*);
-//--------------------------------------
+   virtual void ApplyUpdate_StochDep() = 0;
+//---------------------------------------------------------------------------------------------------------------------
 
 
   // Client of the Solver optionally may call this in order to set the function
@@ -151,6 +152,9 @@ class WorkerSolver : public Solver<Dtype> {
 
  protected:
   void ApplyUpdate() {}
+//------------------------------------------MY FUNCTION---------------------------------------------------
+  void ApplyUpdate_StochDep()  {}
+//--------------------------------------------------------------------------------------------------------
   void SnapshotSolverState(const string& model_filename) {
     LOG(FATAL) << "Should not be called on worker solver.";
   }

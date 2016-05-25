@@ -24,6 +24,13 @@ class SGDSolver : public Solver<Dtype> {
   const vector<shared_ptr<Blob<Dtype> > >& history() { return history_; }
 
  protected:
+//---------------------------------------------- MY FUNCTIONS ---------------------------------------------------------
+
+  virtual void ApplyUpdate_StochDep();
+  virtual void Normalize_StochDep();
+  virtual void Regularize_StochDep();
+  virtual void ComputeUpdateVAlue();
+//---------------------------------------------------------------------------------------------------------------------
   void PreSolve();
   Dtype GetLearningRate();
   virtual void ApplyUpdate();

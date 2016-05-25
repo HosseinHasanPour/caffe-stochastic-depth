@@ -53,6 +53,10 @@ class Net {
   inline const map<int, vector<Blob<Dtype>*>* >  layer_num_to_learnable_params() const  {
       return layer_num_to_learnable_params_;
   }
+  void SetLearnableParams_StochDep(vector<int>* layers_chosen);
+  inline const  vector<Blob<Dtype>*> learnable_params_stochdept() const {
+      return learnable_params_stochdept_;
+  }
 //---------------------------------------------------------------------------------------------------------------------
 
   /// @brief DEPRECATED; use Forward() instead.
@@ -270,12 +274,13 @@ class Net {
   void UpdateDebugInfo(const int param_id);
 
 
-//-------------- MY VARIABLES --------------------
+//------------------------------ MY VARIABLES ------------------------------------------------------------------------
   vector<shared_ptr<Layer<Dtype> > > layers_stochdept_;
   vector<vector<Blob<Dtype>*> > bottom_vecs_stochdept_;
   vector<vector<Blob<Dtype>*> > top_vecs_stochdept_;
   map<int, vector<Blob<Dtype>*>* > layer_num_to_learnable_params_;
-//------------------------------------------------
+  vector<Blob<Dtype>*> learnable_params_stochdept_;
+//--------------------------------------------------------------------------------------------------------------------
 
 
 

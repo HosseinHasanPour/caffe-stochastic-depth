@@ -34,34 +34,51 @@ int main(int argc, char** argv)
     net->ChooseLayers_StochDep(layers_chosen);
 
 
-	for (int i = 0; i < layers_chosen->size(); i++) {
-        int layer_id = (*layers_chosen)[i];
-        int mapvecsize = 0;
-        typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
-        iter pair;
-        if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
-            pair = net->layer_num_to_learnable_params().find(layer_id);
-            mapvecsize = (int)pair->second->size();
-        }
-		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
-        for (int k = 0; k < layers[layer_id]->blobs().size(); k++){
-            cout << layers[layer_id]->blobs()[k] << " " << (*pair->second)[k];
-        }
-        cout << endl;
-	}
-
-    cout << "layers; " << net->layers().size() << endl;
-    cout << "params: " << net->params().size() << endl;
-    cout << "learnable params: " << net->learnable_params().size() << endl;
+//	for (int i = 0; i < layers_chosen->size(); i++) {
+//        int layer_id = (*layers_chosen)[i];
+//        int mapvecsize = 0;
+//        typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
+//        iter pair;
+//        if (net->layer_num_to_learnable_params().count(layer_id) > 0) {
+//            pair = net->layer_num_to_learnable_params().find(layer_id);
+//            mapvecsize = (int)pair->second->size();
+//        }
+//		cout << (*layers_chosen)[i] << ": " << layers[layer_id]->type() << "\t" <<layers[layer_id]->blobs().size() << "\t mapvecsize: " << mapvecsize << endl;
+//        for (int k = 0; k < layers[layer_id]->blobs().size(); k++){
+//            cout << layers[layer_id]->blobs()[k] << " " << (*pair->second)[k];
+//        }
+//        cout << endl;
+//	}
+//
+//    cout << "layers; " << net->layers().size() << endl;
+//    cout << "params: " << net->params().size() << endl;
+//    cout << "learnable params: " << net->learnable_params().size() << endl;
 //    for (int j = 0; j < net->learnable_params().size(); j++) {
 //        cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
 //    }
 
-//    solver->Solve_StochDep();
+    solver->Solve_StochDep();
 }
 
 
 //--------------------------------------- NET --------------------------------------------------------------------------
+
+template <typename Dtype>
+void Net<Dtype>::SetLearnableParams_StochDep(vector<int>* layers_chosen) {
+    learnable_params_stochdept_.resize(0);
+    for (int i = 0; i < (*layers_chosen).size(); i++) {
+        int layer_id = (*layers_chosen)[i];
+        typedef typename map<int, vector<Blob<float>* >* >::const_iterator iter;
+        iter pair;
+        if (layer_num_to_learnable_params_.count(layer_id) > 0) {
+            pair = layer_num_to_learnable_params_.find(layer_id);
+            vector<Blob<Dtype> * > blob_vec =  *(int)pair->second;
+            for ( int j = 0; j < blob_vec.size() ; j++){
+                learnable_params_stochdept_.push_back(blob_vec[j]);
+            }
+        }
+    }
+}
 
 template <typename Dtype>
 void Net<Dtype>::standardResLayer(int & elts, int & idx, vector<int>* layers_chosen, double ran, double prob) {
@@ -273,8 +290,12 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         Dtype loss = 0;
 
         for (int i = 0; i < param_.iter_size(); ++i) {
-//      cout << param_.iter_size() << endl;
             net_->ChooseLayers_StochDep(layers_chosen);
+            net_->SetLearnableParams_StochDep(layers_chosen);
+            for (int k = 0; k < net_->learnable_params_stochdept(); k++) {
+                cout << net_->learnable_params_stochdept()[k] << endl;
+            }
+            return;
             loss += net_->ForwardBackward_StochDep(layers_chosen);
         }
         loss /= param_.iter_size();
@@ -380,4 +401,24 @@ void Solver<Dtype>::Solve_StochDep(const char* resume_file) {
     LOG(INFO) << "Optimization Done.";
 }
 
+
+
+//------------------------------------------------ SGD SOLVER ----------------------------------------------------------
+
+template <typename Dtype>
+void SGDSolver<Dtype>::ApplyUpdate_StochDep() {
+    CHECK(Caffe::root_solver());
+    Dtype rate = GetLearningRate();
+    if (this->param_.display() && this->iter_ % this->param_.display() == 0) {
+        LOG(INFO) << "Iteration " << this->iter_ << ", lr = " << rate;
+    }
+    ClipGradients();
+    for (int param_id = 0; param_id < this->net_->learnable_params().size();
+         ++param_id) {
+        Normalize(param_id);
+        Regularize(param_id);
+        ComputeUpdateValue(param_id, rate);
+    }
+    this->net_->Update();
+}
 
