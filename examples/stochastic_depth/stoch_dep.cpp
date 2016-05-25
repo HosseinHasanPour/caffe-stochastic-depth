@@ -11,15 +11,11 @@
 #include "caffe/util/io.hpp"
 #include "caffe/blob.hpp"
 #include "caffe/sgd_solvers.hpp"
-#include "debug.cpp"
 
 
 
 using namespace caffe;
 using namespace std;
-
-void standardResLayer(int & elts, int & idx, vector<int>* layers_chosen, double ran, double prob);
-void transitionResLayer(int & elts, int & idx, vector<int>* layers_chosen, double ran, double prob);
 
 int main(int argc, char** argv)
 {
