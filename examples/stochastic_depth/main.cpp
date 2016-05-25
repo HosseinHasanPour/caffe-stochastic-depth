@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <stdio.h>
+#include <unordered_map>
 #include <assert.h>
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
