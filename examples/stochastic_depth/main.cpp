@@ -268,7 +268,7 @@ void Net<Dtype>::AppendParam_StochDep(const NetParameter& param, const int layer
             layer_num_to_learnable_params_.insert(make_pair<int,vector<Blob<Dtype>* >* >( layer_id, learn_vec ) );
         }
         else {
-            map<int, vector<Blob<Dtype>* >* >::const_iterator pair;
+            std::map<int, vector<Blob<Dtype>* >* >::const_iterator pair;
             pair = layer_num_to_learnable_params_.find(layer_id);
             pair->second->push_back(params_[net_param_id].get());
         }
