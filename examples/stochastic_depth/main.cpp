@@ -33,8 +33,15 @@ int main(int argc, char** argv)
     net->ChooseLayers_StochDep(layers_chosen);
 
 	for (int i = 0; i < layers_chosen->size(); i++) {
-		cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
+//		cout << (*layers_chosen)[i] << ": " << layers[(*layers_chosen)[i]]->type() << "\t" <<layers[(*layers_chosen)[i]]->blobs().size() << endl;
 	}
+
+    cour << "layers; " << layers_.size() << endl;
+    cout << "params: " << params_.size() << endl;
+    cout << "learnable params: " << learnable_params_.size() << endl;
+//    for (int j = 0; j < params_.size(); j++) {
+//        cout <<
+//    }
 //    solver->Solve_StochDep();
 }
 
