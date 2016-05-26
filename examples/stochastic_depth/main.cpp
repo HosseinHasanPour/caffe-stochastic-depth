@@ -283,7 +283,7 @@ const vector<Blob<Dtype>*>& Net<Dtype>::Forward_StochDep_Test(Dtype* loss) {
 
 
 template <typename Dtype>
-Dtype Net<Dtype>::ForwardFromTo_StochDep_Test(int start, int end) {
+const Dtype Net<Dtype>::ForwardFromTo_StochDep_Test(int start, int end) {
     CHECK_GE(start, 0);
     CHECK_LT(end, layers_.size());
     Dtype loss = 0;
