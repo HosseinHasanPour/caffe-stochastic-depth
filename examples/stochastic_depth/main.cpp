@@ -327,7 +327,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         if (param_.test_interval() && iter_ % param_.test_interval() == 0
             && (iter_ > 0 || param_.test_initialization())
             && Caffe::root_solver()) {
-            TestAll();
+            TestAll_StochDep();
             if (requested_early_exit_) {
                 // Break out of the while loop because stop was requested while testing.
                 break;
