@@ -401,14 +401,12 @@ void Net<Dtype>:: TransitionHelperTest(int & elts, double prob) {
 template <typename Dtype>
 void Net<Dtype>::InitTestScalingStochdept() {
   int elts = 0;
-  int idx = 0;
   double block_num  = 0;
   double prob;
   for (int i = 0; i < 4; i++){
     test_scaling_stochdept_[elts] = 1;
     elts += 1;
   }
-  double block_num  = 0;
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < 4; j++) {
       prob = 1 - 0.5*(block_num)/13;
