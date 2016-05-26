@@ -58,6 +58,11 @@ class Net {
       return learnable_params_ids_stochdept_;
   }
   void Update_StochDep();
+  inline const vector<double> test_scaling_stochdept() const {
+      return test_scaling_stochdept_;
+  }
+  const vector<Blob<Dtype>*>& Forward_StochDep_Test(Dtype* loss = NULL);
+  const Dtype ForwardFromTo_StochDep_Test(int start, int end);
 //---------------------------------------------------------------------------------------------------------------------
 
   /// @brief DEPRECATED; use Forward() instead.
@@ -282,6 +287,7 @@ class Net {
   map<int, vector<Blob<Dtype>*>* > layer_num_to_learnable_params_;
   map<int, vector<int>* > layer_num_to_learnable_params_idxs;
   vector<int> learnable_params_ids_stochdept_;
+  vector<double> test_scaling_stochdept_;
 //--------------------------------------------------------------------------------------------------------------------
 
 

@@ -52,6 +52,8 @@ class Solver {
    void Step_StochDep(int, std::vector<int>*);
 protected:
     virtual void ApplyUpdate_StochDep() = 0;
+    void TestAll_StochDep();
+    void Test_StochDep(const int test_net_id = 0);
 public:
 
 //---------------------------------------------------------------------------------------------------------------------

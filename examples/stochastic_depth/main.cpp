@@ -263,11 +263,27 @@ void Net<Dtype>::Backward_StochDep( vector<int>* layers_chosen) {
 template <typename Dtype>
 const vector<Blob<Dtype>*>& Net<Dtype>::Forward_StochDep(vector<int>* layers_chosen, Dtype* loss) {
     if (loss != NULL) {
-        *loss = ForwardFromTo_StochDep(layers_chosen);
+        *loss = ForwardFromTo_StochDep_Test(layers_chosen);
     } else {
-        ForwardFromTo_StochDep(layers_chosen);
+        ForwardFromTo_StochDep_Test(layers_chosen);
     }
     return net_output_blobs_;
+}
+
+
+template <typename Dtype>
+Dtype Net<Dtype>::ForwardFromTo_StochDep_Test(int start, int end) {
+    CHECK_GE(start, 0);
+    CHECK_LT(end, layers_.size());
+    Dtype loss = 0;
+    for (int i = start; i <= end; ++i) {
+        // LOG(ERROR) << "Forwarding " << layer_names_[i];
+//    cout << layers_[i]->type() << i << "\t bottom size: " <<  bottom_vecs_[i].size() << endl;
+        Dtype layer_loss = layers_[i]->Forward(bottom_vecs_[i], top_vecs_[i]);
+        loss += layer_loss;
+        if (debug_info_) { ForwardDebugInfo(i); }
+    }
+    return loss;
 }
 
 
@@ -290,7 +306,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         if (param_.test_interval() && iter_ % param_.test_interval() == 0
             && (iter_ > 0 || param_.test_initialization())
             && Caffe::root_solver()) {
-            TestAll();
+            TestAll_StochDep();
             if (requested_early_exit_) {
                 // Break out of the while loop because stop was requested while testing.
                 break;
@@ -307,7 +323,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         for (int i = 0; i < param_.iter_size(); ++i) {
             net_->ChooseLayers_StochDep(layers_chosen);
             net_->SetLearnableParams_StochDep(layers_chosen);
-            cout << "learnable_params_stochdep: " << net_->learnable_params_ids_stochdept().size() <<"\t layers chosen: " << (*layers_chosen).size() << endl;
+//            cout << "learnable_params_stochdep: " << net_->learnable_params_ids_stochdept().size() <<"\t layers chosen: " << (*layers_chosen).size() << endl;
             loss += net_->ForwardBackward_StochDep(layers_chosen);
         }
         loss /= param_.iter_size();
@@ -411,6 +427,92 @@ void Solver<Dtype>::Solve_StochDep(const char* resume_file) {
         TestAll();
     }
     LOG(INFO) << "Optimization Done.";
+}
+
+
+template <typename Dtype>
+void Solver<Dtype>::TestAll_StochDep() {
+    for (int test_net_id = 0;
+         test_net_id < test_nets_.size() && !requested_early_exit_;
+         ++test_net_id) {
+        Test_StochDep(test_net_id);
+    }
+}
+
+
+template <typename Dtype>
+void Solver<Dtype>::Test_StochDep(const int test_net_id) {
+    CHECK(Caffe::root_solver());
+    LOG(INFO) << "Iteration " << iter_
+    << ", Testing net (#" << test_net_id << ")";
+    CHECK_NOTNULL(test_nets_[test_net_id].get())->
+            ShareTrainedLayersWith(net_.get());
+    vector<Dtype> test_score;
+    vector<int> test_score_output_id;
+    const shared_ptr<Net<Dtype> >& test_net = test_nets_[test_net_id];
+    Dtype loss = 0;
+    for (int i = 0; i < param_.test_iter(test_net_id); ++i) {
+        SolverAction::Enum request = GetRequestedAction();
+        // Check to see if stoppage of testing/training has been requested.
+        while (request != SolverAction::NONE) {
+            if (SolverAction::SNAPSHOT == request) {
+                Snapshot();
+            } else if (SolverAction::STOP == request) {
+                requested_early_exit_ = true;
+            }
+            request = GetRequestedAction();
+        }
+        if (requested_early_exit_) {
+            // break out of test loop.
+            break;
+        }
+
+        Dtype iter_loss;
+        const vector<Blob<Dtype>*>& result =
+                test_net->Forward_StochDep_Test(&iter_loss);
+        if (param_.test_compute_loss()) {
+            loss += iter_loss;
+        }
+        if (i == 0) {
+            for (int j = 0; j < result.size(); ++j) {
+                const Dtype* result_vec = result[j]->cpu_data();
+                for (int k = 0; k < result[j]->count(); ++k) {
+                    test_score.push_back(result_vec[k]);
+                    test_score_output_id.push_back(j);
+                }
+            }
+        } else {
+            int idx = 0;
+            for (int j = 0; j < result.size(); ++j) {
+                const Dtype* result_vec = result[j]->cpu_data();
+                for (int k = 0; k < result[j]->count(); ++k) {
+                    test_score[idx++] += result_vec[k];
+                }
+            }
+        }
+    }
+    if (requested_early_exit_) {
+        LOG(INFO)     << "Test interrupted.";
+        return;
+    }
+    if (param_.test_compute_loss()) {
+        loss /= param_.test_iter(test_net_id);
+        LOG(INFO) << "Test loss: " << loss;
+    }
+    for (int i = 0; i < test_score.size(); ++i) {
+        const int output_blob_index =
+                test_net->output_blob_indices()[test_score_output_id[i]];
+        const string& output_name = test_net->blob_names()[output_blob_index];
+        const Dtype loss_weight = test_net->blob_loss_weights()[output_blob_index];
+        ostringstream loss_msg_stream;
+        const Dtype mean_score = test_score[i] / param_.test_iter(test_net_id);
+        if (loss_weight) {
+            loss_msg_stream << " (* " << loss_weight
+            << " = " << loss_weight * mean_score << " loss)";
+        }
+        LOG(INFO) << "    Test net output #" << i << ": " << output_name << " = "
+        << mean_score << loss_msg_stream.str();
+    }
 }
 
 
