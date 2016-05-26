@@ -292,7 +292,7 @@ const Dtype Net<Dtype>::ForwardFromTo_StochDep_Test(int start, int end) {
 //    cout << layers_[i]->type() << i << "\t bottom size: " <<  bottom_vecs_[i].size() << endl;
         Dtype layer_loss = layers_[i]->Forward(bottom_vecs_[i], top_vecs_[i]);
         loss += layer_loss;
-        vector<Blob<Dtype>*> top_vec = top_vecs[i];
+        vector<Blob<Dtype>*> top_vec = top_vecs_[i];
         double prob = test_scaling_stochdept_[i];
         for (int j = 0; j < top_vec.size(); j++) {
             Blob<Dtype>* top_blob = top_vec[j];
