@@ -385,7 +385,7 @@ template <typename Dtype>
 void Net<Dtype>:: StandardHelperTest(double prob) {
   for (int i = 0; i < 10; i++){
     int elts = test_scaling_stochdept_.size();
-    cout << layers_[elts]->type() << endl;
+    cout << elts << '\t' << layers_[elts]->type() << endl;
     test_scaling_stochdept_.push_back(1);
   }
 }
@@ -394,7 +394,7 @@ template <typename Dtype>
 void Net<Dtype>:: TransitionHelperTest(double prob) {
   for (int i = 0; i < 13; i++){
     int elts = test_scaling_stochdept_.size();
-    cout << layers_[elts]->type() << endl;
+    cout << elts << '\t' << layers_[elts]->type() << endl;
     test_scaling_stochdept_.push_back(1);
   }
 }
