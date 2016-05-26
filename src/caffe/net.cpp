@@ -369,6 +369,7 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
     layer_names_index_[layer_names_[layer_id]] = layer_id;
   }
   ShareWeights();
+  InitTestScalingStochdept();
   debug_info_ = param.debug_info();
   LOG_IF(INFO, Caffe::root_solver()) << "Network initialization done.";
 }
@@ -377,6 +378,56 @@ template <typename Dtype>
 void Net<Dtype>::Update_StochDep() {
   for (int i = 0; i < learnable_params_ids_stochdept_.size(); ++i) {
     learnable_params_[learnable_params_ids_stochdept_[i]]->Update();
+  }
+}
+
+template <typename Dtype>
+void Net<Dtype>:: StandardHelperTest(int & elts, double prob) {
+  for (int i = 0; i < 10; i++){
+    cout << layers_[elts]->type() << endl;
+    elts += 1;
+  }
+}
+
+template <typename Dtype>
+void Net<Dtype>:: TransitionHelperTest(int & elts, double prob) {
+  for (int i = 0; i < 13; i++){
+    cout << layers_[elts]->type() << endl;
+    elts += 1;
+  }
+}
+
+
+template <typename Dtype>
+void Net<Dtype>::InitTestScalingStochdept() {
+  int elts = 0;
+  int idx = 0;
+  double block_num  = 0;
+  double prob;
+  for (int i = 0; i < 4; i++){
+    test_scaling_stochdept_[elts] = 1;
+    elts += 1;
+  }
+  double block_num  = 0;
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 4; j++) {
+      prob = 1 - 0.5*(block_num)/13;
+      StandardHelperTest(elts, prob);
+      block_num += 1.0;
+    }
+    prob = 1 - 0.5*(block_num)/13;
+    TransitionHelperTest(elts, prob);
+    block_num += 1.0;
+  }
+  for (int j = 0; j < 4; j++) {
+    prob = 1 - 0.5*(block_num)/13;
+    StandardHelperTest(elts, prob);
+    block_num += 1.0;
+  }
+
+  for (int i = 0; i < 4; i++) {
+    test_scaling_stochdept_[elts] = 1;
+    elts += 1;
   }
 }
 
