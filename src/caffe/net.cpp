@@ -382,50 +382,50 @@ void Net<Dtype>::Update_StochDep() {
 }
 
 template <typename Dtype>
-void Net<Dtype>:: StandardHelperTest(int & elts, double prob) {
+void Net<Dtype>:: StandardHelperTest(double prob) {
   for (int i = 0; i < 10; i++){
+    int elts = test_scaling_stochdept_.size();
     cout << layers_[elts]->type() << endl;
-    elts += 1;
+    test_scaling_stochdept_.pushb_back(1);
   }
 }
 
 template <typename Dtype>
-void Net<Dtype>:: TransitionHelperTest(int & elts, double prob) {
+void Net<Dtype>:: TransitionHelperTest(double prob) {
   for (int i = 0; i < 13; i++){
+    int elts = test_scaling_stochdept_.size();
     cout << layers_[elts]->type() << endl;
-    elts += 1;
+    test_scaling_stochdept_.pushb_back(1);
   }
 }
 
 
 template <typename Dtype>
 void Net<Dtype>::InitTestScalingStochdept() {
-  int elts = 0;
+  test_scaling_stochdept_.resize(0);
   double block_num  = 0;
   double prob;
   for (int i = 0; i < 4; i++){
-    test_scaling_stochdept_[elts] = 1;
-    elts += 1;
+    test_scaling_stochdept_.push_back(1);
   }
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < 4; j++) {
       prob = 1 - 0.5*(block_num)/13;
-      StandardHelperTest(elts, prob);
+      StandardHelperTest(prob);
       block_num += 1.0;
     }
     prob = 1 - 0.5*(block_num)/13;
-    TransitionHelperTest(elts, prob);
+    TransitionHelperTest(prob);
     block_num += 1.0;
   }
   for (int j = 0; j < 4; j++) {
     prob = 1 - 0.5*(block_num)/13;
-    StandardHelperTest(elts, prob);
+    StandardHelperTest(prob);
     block_num += 1.0;
   }
 
   for (int i = 0; i < 4; i++) {
-    test_scaling_stochdept_[elts] = 1;
-    elts += 1;
+    test_scaling_stochdept_.push_back(1);
   }
 }
 

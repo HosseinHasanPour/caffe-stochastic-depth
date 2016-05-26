@@ -64,8 +64,8 @@ class Net {
   const vector<Blob<Dtype>*>& Forward_StochDep_Test(Dtype* loss = NULL);
   const Dtype ForwardFromTo_StochDep_Test(int start, int end);
   void InitTestScalingStochdept();
-  void StandardHelperTest(int & elts, double prob);
-  void TransitionHelperTest(int & elts, double prob);
+  void StandardHelperTest(double prob);
+  void TransitionHelperTest(double prob);
 //---------------------------------------------------------------------------------------------------------------------
 
   /// @brief DEPRECATED; use Forward() instead.
