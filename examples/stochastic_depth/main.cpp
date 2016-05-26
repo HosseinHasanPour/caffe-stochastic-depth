@@ -288,7 +288,7 @@ const Dtype Net<Dtype>::ForwardFromTo_StochDep_Test(int start, int end) {
     CHECK_LT(end, layers_.size());
     Dtype loss = 0;
     for (int i = start; i <= end; ++i) {
-        // LOG(ERROR) << "Forwarding " << layer_names_[i];
+         LOG(ERROR) << "Forwarding " << layer_names_[i];
 //    cout << layers_[i]->type() << i << "\t bottom size: " <<  bottom_vecs_[i].size() << endl;
         Dtype layer_loss = layers_[i]->Forward(bottom_vecs_[i], top_vecs_[i]);
         loss += layer_loss;
@@ -327,12 +327,13 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         if (param_.test_interval() && iter_ % param_.test_interval() == 0
             && (iter_ > 0 || param_.test_initialization())
             && Caffe::root_solver()) {
-            TestAll_StochDep();
+            TestAll();
             if (requested_early_exit_) {
                 // Break out of the while loop because stop was requested while testing.
                 break;
             }
         }
+
         for (int i = 0; i < callbacks_.size(); ++i) {
             callbacks_[i]->on_start();
         }
@@ -401,7 +402,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
 
 
 template <typename Dtype>
-void Solver<Dtype>::Solve_StochDep(const char* resume_file) {
+    void Solver<Dtype>::Solve_StochDep(const char* resume_file) {
     CHECK(Caffe::root_solver());
     LOG(INFO) << "Solving " << net_->name();
     LOG(INFO) << "Learning Rate Policy: " << param_.lr_policy();
@@ -438,14 +439,14 @@ void Solver<Dtype>::Solve_StochDep(const char* resume_file) {
     if (param_.display() && iter_ % param_.display() == 0) {
         int average_loss = this->param_.average_loss();
         Dtype loss;
-        net_->Forward(&loss);
+        net_->Forward_StochDep_Test(&loss);
 
         UpdateSmoothedLoss(loss, start_iter, average_loss);
 
         LOG(INFO) << "Iteration " << iter_ << ", loss = " << smoothed_loss_;
     }
     if (param_.test_interval() && iter_ % param_.test_interval() == 0) {
-        TestAll();
+        TestAll_StochDep();
     }
     LOG(INFO) << "Optimization Done.";
 }
@@ -453,7 +454,7 @@ void Solver<Dtype>::Solve_StochDep(const char* resume_file) {
 
 template <typename Dtype>
 void Solver<Dtype>::TestAll_StochDep() {
-    for (int test_net_id = 0;
+        for (int test_net_id = 0;
          test_net_id < test_nets_.size() && !requested_early_exit_;
          ++test_net_id) {
         Test_StochDep(test_net_id);
