@@ -430,7 +430,7 @@ void Net<Dtype>::InitTestScalingStochdept() {
     block_num += 1.0;
   }
 
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 6; i++) {
     test_scaling_stochdept_.push_back(1);
   }
 }
