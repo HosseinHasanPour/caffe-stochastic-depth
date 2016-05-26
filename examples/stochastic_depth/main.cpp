@@ -288,7 +288,7 @@ const Dtype Net<Dtype>::ForwardFromTo_StochDep_Test(int start, int end) {
     CHECK_LT(end, layers_.size());
     Dtype loss = 0;
     for (int i = start; i <= end; ++i) {
-         LOG(ERROR) << "Forwarding " << layer_names_[i];
+//         LOG(ERROR) << "Forwarding " << layer_names_[i];
 //    cout << layers_[i]->type() << i << "\t bottom size: " <<  bottom_vecs_[i].size() << endl;
         Dtype layer_loss = layers_[i]->Forward(bottom_vecs_[i], top_vecs_[i]);
         loss += layer_loss;
@@ -454,9 +454,7 @@ template <typename Dtype>
 
 template <typename Dtype>
 void Solver<Dtype>::TestAll_StochDep() {
-        for (int test_net_id = 0;
-         test_net_id < test_nets_.size() && !requested_early_exit_;
-         ++test_net_id) {
+    for (int test_net_id = 0; test_net_id < test_nets_.size() && !requested_early_exit_; ++test_net_id) {
         Test_StochDep(test_net_id);
     }
 }
