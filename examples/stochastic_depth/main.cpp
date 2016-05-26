@@ -261,11 +261,11 @@ void Net<Dtype>::Backward_StochDep( vector<int>* layers_chosen) {
 }
 
 template <typename Dtype>
-vector<Blob<Dtype>*>& Net<Dtype>::Forward_StochDep_Test(vector<int>* layers_chosen, Dtype* loss) {
+const vector<Blob<Dtype>*>& Net<Dtype>::Forward_StochDep_Test(Dtype* loss) {
     if (loss != NULL) {
-        *loss = ForwardFromTo_StochDep_Test(layers_chosen);
+        *loss = ForwardFromTo_StochDep_Test(0, layers_.size() - 1);
     } else {
-        ForwardFromTo_StochDep_Test(layers_chosen);
+        ForwardFromTo_StochDep_Test(0, layers_.size() - 1);
     }
     return net_output_blobs_;
 }
