@@ -212,23 +212,35 @@ void Net<Dtype>::ChooseLayers_StochDep(vector<int>* layers_chosen){
 
     srand((unsigned)time(NULL));
     double block_num  = 0;
+    double num_blocks = 53;
     double prob;
     double ran;
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 4; j++) {
-            ran = (double) rand()/RAND_MAX;
-            prob = 1 - 0.5*(block_num)/13;
-            standardResLayer(elts, idx, layers_chosen, ran, prob);
-            block_num += 1.0;
-        }
+
+    for (int j = 0; j < 18; j++) {
         ran = (double) rand()/RAND_MAX;
-        prob = 1 - 0.5*(block_num)/13;
-        transitionResLayer(elts, idx, layers_chosen, ran, prob);
+        prob = 1 - 0.5*(block_num)/num_blocks;
+        standardResLayer(elts, idx, layers_chosen, ran, prob);
         block_num += 1.0;
     }
-    for (int j = 0; j < 4; j++) {
+    ran = (double) rand()/RAND_MAX;
+    prob = 1 - 0.5*(block_num)/num_blocks;
+    transitionResLayer(elts, idx, layers_chosen, ran, prob);
+    block_num += 1.0;
+
+    for (int j = 0; j < 17; j++) {
         ran = (double) rand()/RAND_MAX;
-        prob = 1 - 0.5*(block_num)/13;
+        prob = 1 - 0.5*(block_num)/num_blocks;
+        standardResLayer(elts, idx, layers_chosen, ran, prob);
+        block_num += 1.0;
+    }
+    ran = (double) rand()/RAND_MAX;
+    prob = 1 - 0.5*(block_num)/num_blocks;
+    transitionResLayer(elts, idx, layers_chosen, ran, prob);
+    block_num += 1.0;
+
+    for (int j = 0; j < 17; j++) {
+        ran = (double) rand()/RAND_MAX;
+        prob = 1 - 0.5*(block_num)/num_blocks;
         standardResLayer(elts, idx, layers_chosen, ran, prob);
         block_num += 1.0;
     }

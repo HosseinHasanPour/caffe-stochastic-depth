@@ -410,22 +410,32 @@ template <typename Dtype>
 void Net<Dtype>::InitTestScalingStochdept() {
   test_scaling_stochdept_.resize(0);
   double block_num  = 0;
+  double num_blocks = 53;
   double prob;
   for (int i = 0; i < 4; i++){
     test_scaling_stochdept_.push_back(1);
   }
-  for (int i = 0; i < 2; i++) {
-    for (int j = 0; j < 4; j++) {
-      prob = 1 - 0.5*(block_num)/13;
-      StandardHelperTest(prob);
-      block_num += 1.0;
-    }
-    prob = 1 - 0.5*(block_num)/13;
-    TransitionHelperTest(prob);
+
+  for (int j = 0; j < 18; j++) {
+    prob = 1 - 0.5*(block_num)/num_blocks;
+    StandardHelperTest(prob);
     block_num += 1.0;
   }
-  for (int j = 0; j < 4; j++) {
-    prob = 1 - 0.5*(block_num)/13;
+  prob = 1 - 0.5*(block_num)/num_blocks;
+  TransitionHelperTest(prob);
+  block_num += 1.0;
+
+  for (int j = 0; j < 17; j++) {
+    prob = 1 - 0.5*(block_num)/num_blocks;
+    StandardHelperTest(prob);
+    block_num += 1.0;
+  }
+  prob = 1 - 0.5*(block_num)/num_blocks;
+  TransitionHelperTest(prob);
+  block_num += 1.0;
+
+  for (int j = 0; j < 17; j++) {
+    prob = 1 - 0.5*(block_num)/num_blocks;
     StandardHelperTest(prob);
     block_num += 1.0;
   }
