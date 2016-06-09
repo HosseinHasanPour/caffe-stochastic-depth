@@ -3,7 +3,6 @@ test_net: "examples/stochastic_depth/residual_test54.prototxt"
 test_iter: 100
 test_interval: 10
 base_lr: 0.1
-display: 1
 max_iter: 200000
 lr_policy: "multistep"
 gamma: 0.1
