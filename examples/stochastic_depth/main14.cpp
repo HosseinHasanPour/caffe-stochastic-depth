@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 {
     Caffe::set_mode(Caffe::GPU);
 
-    string param_file = "examples/stochastic_depth/solver.prototxt";
+    string param_file = "examples/stochastic_depth/solver14.prototxt";
     SolverParameter param;
     ReadSolverParamsFromTextFileOrDie(param_file, &param);
     Solver<float>* solver = SolverRegistry<float>::CreateSolver(param);
