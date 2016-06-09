@@ -1,4 +1,5 @@
-train_net: "examples/resnet_cifar/residual_train.prototxt"
+train_net: "examples/resnet_cifar/residual_train54.prototxt"
+test_net: "examples/resnet_cifar/residual_test54.prototxt"
 base_lr: 0.1
 display: 1
 max_iter: 200000
