@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
 
-
-/usr/local/caffe/build/tools/caffe train --solver=examples/stochastic_depth/solver54.prototxt
+git pull
+make examples
+./build/examples/stochastic_depth/main54_reg.bin
