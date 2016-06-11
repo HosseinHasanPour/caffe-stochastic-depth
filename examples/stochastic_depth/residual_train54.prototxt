@@ -6302,7 +6302,7 @@ layer {
 layer {
   name: "InnerProduct1"
   type: "InnerProduct"
-  bottom: "Pooling3"
+  bottom: "Pooling4"
   top: "InnerProduct1"
   inner_product_param {
     num_output: 10
