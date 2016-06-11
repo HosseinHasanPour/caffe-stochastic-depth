@@ -6170,16 +6170,130 @@ layer {
   }
 }
 layer {
-  name: "ReLU107"
+  name: "ReLU106"
   type: "ReLU"
   bottom: "Eltwise53"
   top: "Eltwise53"
 }
 layer {
-  name: "Pooling3"
-  type: "Pooling"
+  name: "Convolution107"
+  type: "Convolution"
   bottom: "Eltwise53"
-  top: "Pooling3"
+  top: "Convolution107"
+  convolution_param {
+    num_output: 64
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "BatchNorm107"
+  type: "BatchNorm"
+  bottom: "Convolution107"
+  top: "Convolution107"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+}
+layer {
+  name: "Scale107"
+  type: "Scale"
+  bottom: "Convolution107"
+  top: "Convolution107"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
+  name: "ReLU107"
+  type: "ReLU"
+  bottom: "Convolution107"
+  top: "Convolution107"
+}
+layer {
+  name: "Convolution108"
+  type: "Convolution"
+  bottom: "Convolution107"
+  top: "Convolution108"
+  convolution_param {
+    num_output: 64
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "BatchNorm108"
+  type: "BatchNorm"
+  bottom: "Convolution108"
+  top: "Convolution108"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+}
+layer {
+  name: "Scale108"
+  type: "Scale"
+  bottom: "Convolution108"
+  top: "Convolution108"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
+  name: "Eltwise54"
+  type: "Eltwise"
+  bottom: "Eltwise53"
+  bottom: "Convolution108"
+  top: "Eltwise54"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "ReLU108"
+  type: "ReLU"
+  bottom: "Eltwise54"
+  top: "Eltwise54"
+}
+layer {
+  name: "Pooling4"
+  type: "Pooling"
+  bottom: "Eltwise54"
+  top: "Pooling4"
   pooling_param {
     pool: AVE
     global_pooling: true
@@ -6196,6 +6310,16 @@ layer {
     weight_filler {
       type: "msra"
     }
+  }
+}
+layer {
+  name: "Accuracy"
+  type: "Accuracy"
+  bottom: "InnerProduct1"
+  bottom: "Data2"
+  top: "Accuracy"
+  include {
+    phase: TEST
   }
 }
 layer {
