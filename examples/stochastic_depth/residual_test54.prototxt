@@ -8,8 +8,8 @@ layer {
     crop_size: 32
   }
   data_param {
-    source: "/scratch/pas282/caffe/examples/cifar10/cifar10_test_leveldb_padding0"
-    batch_size: 100
+    source: "/scratch/pas282/caffe/examples/cifar10/cifar10_test_leveldb_padding1"
+    batch_size: 128
     backend: LEVELDB
   }
 }
@@ -2134,7 +2134,7 @@ layer {
   top: "Input1"
   input_param {
     shape {
-      dim: 100
+      dim: 128
       dim: 16
       dim: 16
       dim: 16
@@ -4220,7 +4220,7 @@ layer {
   top: "Input2"
   input_param {
     shape {
-      dim: 100
+      dim: 128
       dim: 32
       dim: 8
       dim: 8
@@ -6170,67 +6170,15 @@ layer {
   }
 }
 layer {
-  name: "ReLU106"
+  name: "ReLU107"
   type: "ReLU"
   bottom: "Eltwise53"
   top: "Eltwise53"
 }
 layer {
-  name: "Convolution107"
-  type: "Convolution"
-  bottom: "Eltwise53"
-  top: "Convolution107"
-  convolution_param {
-    num_output: 64
-    bias_term: true
-    pad: 1
-    kernel_size: 3
-    stride: 1
-    weight_filler {
-      type: "msra"
-    }
-    bias_filler {
-      type: "constant"
-    }
-  }
-}
-layer {
-  name: "BatchNorm107"
-  type: "BatchNorm"
-  bottom: "Convolution107"
-  top: "Convolution107"
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  }
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  }
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  }
-}
-layer {
-  name: "Scale107"
-  type: "Scale"
-  bottom: "Convolution107"
-  top: "Convolution107"
-  scale_param {
-    bias_term: true
-  }
-}
-layer {
-  name: "ReLU107"
-  type: "ReLU"
-  bottom: "Convolution107"
-  top: "Convolution107"
-}
-layer {
   name: "Convolution108"
   type: "Convolution"
-  bottom: "Convolution107"
+  bottom: "Eltwise53"
   top: "Convolution108"
   convolution_param {
     num_output: 64
@@ -6274,17 +6222,69 @@ layer {
   }
 }
 layer {
+  name: "ReLU108"
+  type: "ReLU"
+  bottom: "Convolution108"
+  top: "Convolution108"
+}
+layer {
+  name: "Convolution109"
+  type: "Convolution"
+  bottom: "Convolution108"
+  top: "Convolution109"
+  convolution_param {
+    num_output: 64
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "BatchNorm109"
+  type: "BatchNorm"
+  bottom: "Convolution109"
+  top: "Convolution109"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+}
+layer {
+  name: "Scale109"
+  type: "Scale"
+  bottom: "Convolution109"
+  top: "Convolution109"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "Eltwise54"
   type: "Eltwise"
   bottom: "Eltwise53"
-  bottom: "Convolution108"
+  bottom: "Convolution109"
   top: "Eltwise54"
   eltwise_param {
     operation: SUM
   }
 }
 layer {
-  name: "ReLU108"
+  name: "ReLU109"
   type: "ReLU"
   bottom: "Eltwise54"
   top: "Eltwise54"
