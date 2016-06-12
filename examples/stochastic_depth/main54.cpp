@@ -318,8 +318,28 @@ const Dtype Net<Dtype>::ForwardFromTo_StochDep_Test(int start, int end) {
     return loss;
 }
 
-
-
+template <typename Dtype>
+void Net<Dtype>::ClearParamDiffs_StochDep() {
+    const vector<int>& learnable_params_ids = learnable_params_ids_stochdept();
+    for (int i = 0; i < learnable_params_ids.size(); i++) {
+        int param_id = learnable_params_ids[i];
+        Blob<Dtype>* blob = learnable_params_[param_id];
+        switch (Caffe::mode()) {
+            case Caffe::CPU:
+                caffe_set(blob->count(), static_cast<Dtype>(0),
+                          blob->mutable_cpu_diff());
+                break;
+            case Caffe::GPU:
+#ifndef CPU_ONLY
+                caffe_gpu_set(blob->count(), static_cast<Dtype>(0),
+                              blob->mutable_gpu_diff());
+#else
+                NO_GPU;
+#endif
+                break;
+        }
+    }
+}
 
 
 //----------------------------------------- SOLVER ---------------------------------------------------------------------
@@ -334,7 +354,9 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
 
     while (iter_ < stop_iter) {
         // zero-init the params
-        net_->ClearParamDiffs();
+        net_->ChooseLayers_StochDep(layers_chosen);
+        net_->SetLearnableParams_StochDep(layers_chosen);
+        net_->ClearParamDiffs_StochDep();
         if (param_.test_interval() && iter_ % param_.test_interval() == 0
             && (iter_ > 0 || param_.test_initialization())
             && Caffe::root_solver()) {
@@ -354,8 +376,6 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         Dtype loss = 0;
 
         for (int i = 0; i < param_.iter_size(); ++i) {
-            net_->ChooseLayers_StochDep(layers_chosen);
-            net_->SetLearnableParams_StochDep(layers_chosen);
 //            cout << "learnable_params_stochdep: " << net_->learnable_params_ids_stochdept().size() <<"\t layers chosen: " << (*layers_chosen).size() << endl;
             loss += net_->ForwardBackward_StochDep(layers_chosen);
         }

@@ -1,8 +1,8 @@
 train_net: "examples/stochastic_depth/residual_train54.prototxt"
 test_net: "examples/stochastic_depth/residual_test54.prototxt"
 test_iter: 100
-test_interval: 10
-base_lr: 0.1
+test_interval: 400
+base_lr: 0.02
 max_iter: 200000
 lr_policy: "multistep"
 gamma: 0.1
@@ -13,4 +13,4 @@ random_seed: 831486
 stepvalue: 100000
 stepvalue: 150000
 type: "Nesterov"
-display: 10
+display: 400
