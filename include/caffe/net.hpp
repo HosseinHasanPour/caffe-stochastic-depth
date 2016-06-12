@@ -66,7 +66,7 @@ class Net {
   void InitTestScalingStochdept();
   void StandardHelperTest(double prob);
   void TransitionHelperTest(double prob);
-  void ClearParamDiffs_STochDep();
+  void ClearParamDiffs_StochDep();
 //---------------------------------------------------------------------------------------------------------------------
 
   /// @brief DEPRECATED; use Forward() instead.
