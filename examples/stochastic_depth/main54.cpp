@@ -368,7 +368,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
         }
 
         for (int i = 0; i < callbacks_.size(); ++i) {
-            console.log('--------------------callback1 called in step_stochdep-------------------');
+            console.log("--------------------callback1 called in step_stochdep-------------------");
             callbacks_[i]->on_start();
         }
         const bool display = param_.display() && iter_ % param_.display() == 0;
@@ -407,7 +407,7 @@ void Solver<Dtype>::Step_StochDep(int iters, vector<int>* layers_chosen) {
             }
         }
         for (int i = 0; i < callbacks_.size(); ++i) {
-            console.log('--------------------callback2 called in step_stochdep-------------------');
+            console.log("--------------------callback2 called in step_stochdep-------------------");
             callbacks_[i]->on_gradients_ready();
         }
         ApplyUpdate_StochDep();
