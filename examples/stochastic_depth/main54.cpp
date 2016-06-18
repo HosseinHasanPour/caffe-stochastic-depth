@@ -39,6 +39,7 @@ int main(int argc, char** argv)
 
 template <typename Dtype>
 void Net<Dtype>::SetLearnableParams_StochDep() {
+    cout << "SetLearnableParams_StochDep" << endl;
     learnable_params_ids_stochdept_.resize(0);
     for (int i = 0; i < (*layers_chosen).size(); i++) {
         int layer_id = (*layers_chosen)[i];
@@ -52,10 +53,12 @@ void Net<Dtype>::SetLearnableParams_StochDep() {
             }
         }
     }
+    cout << "SetLearnableParams_StochDep end" << endl;
 }
 
 template <typename Dtype>
 void Net<Dtype>::standardResLayer(int & elts, int & idx, double ran, double prob) {
+    cout << "standardResLayer" << endl;
     if (ran < prob){ // include res block
         for (int i = 0; i < 10; i++){
             layerHelper_StochDep(elts, idx, 1, 1, 0, true);
@@ -65,10 +68,12 @@ void Net<Dtype>::standardResLayer(int & elts, int & idx, double ran, double prob
         layerHelper_StochDep(elts, idx, 10, 1, 10, false);
 //        cout << "skipping standard block: " << elts << endl;
     }
+    cout << "standardResLayer end" << endl;
 }
 
 template <typename Dtype>
 void Net<Dtype>::transitionResLayer(int & elts, int& idx, double ran, double prob){
+    cout << "transitionResLayer" << endl;
     if (ran < prob) { //include res block
         for (int i = 0; i < 13; i++) {
             layerHelper_StochDep(elts, idx, 1, 1, 0, true);
@@ -81,10 +86,12 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, double ran, double pro
         layerHelper_StochDep(elts, idx, 9, 1, 9, false);
 //		cout << "skipping transition block: " << elts << endl;
     }
+    cout << "transitionResLayer end" << endl;
 }
 
 template <typename Dtype>
 void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, int elt_incr, int idx_incr, int bottom_incr, bool use_top) {
+    cout << "layerHelper_StochDep" << endl;
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
 
     if (use_top) {
@@ -110,11 +117,13 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, int elt_incr, int id
 
     elts += elt_incr;
     idx += idx_incr;
+    cout << "layerHelper_StochDep end" << endl;
 }
 
 
 template <typename Dtype>
 Dtype Net<Dtype>::ForwardFromTo_StochDep() {
+    cout << "ForwardFromTo_StochDep" << endl;
     Dtype loss = 0;
     int layer_idx;
     for (int i = 0; i < layers_chosen->size(); i++) {
@@ -128,20 +137,24 @@ Dtype Net<Dtype>::ForwardFromTo_StochDep() {
         loss += layer_loss;
         if (debug_info_) { ForwardDebugInfo(layer_idx); }
     }
+    cout << "ForwardFromTo_StochDep end" << endl;
     return loss;
 }
 
 template<typename Dtype>
 void Net<Dtype>::printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx) {
-for (int i = 0; i < vec[idx].size(); i++) {
-Blob<Dtype>* blo= vec[idx][i];
-//cout << blo->shape(0) << " " << blo->shape(1) << " " << blo->shape(2) << " " <<  blo->shape(3)  << endl;
-cout << blo << endl;
-}
+    cout << "printvecblobs" << endl;
+    for (int i = 0; i < vec[idx].size(); i++) {
+        Blob<Dtype>* blo= vec[idx][i];
+        //cout << blo->shape(0) << " " << blo->shape(1) << " " << blo->shape(2) << " " <<  blo->shape(3)  << endl;
+        cout << blo << endl;
+    }
+    cout << "printvecblobs end" << endl;
 }
 
 template <typename Dtype>
 void Net<Dtype>::BackwardFromTo_StochDep() {
+    cout << "BackwardFromTo_StochDep" << endl;
     int layer_idx;
     for (int i = layers_chosen->size() - 1; i >= 0; i--) {
         layer_idx = (*layers_chosen)[i];
@@ -150,18 +163,22 @@ void Net<Dtype>::BackwardFromTo_StochDep() {
             if (debug_info_) { BackwardDebugInfo(layer_idx); }
         }
     }
+    cout << "BackwardFromTo_StochDep end" << endl;
 }
 
 template<typename Dtype>
 Dtype Net<Dtype>::ForwardBackward_StochDep() {
+    cout << "ForwardBackward_StochDep" << endl;
     Dtype loss;
     Forward_StochDep(&loss);
     Backward_StochDep();
+    cout << "ForwardBackward_StochDep end" << endl;
     return loss;
 }
 
 template<typename Dtype>
 void Net<Dtype>::ChooseLayers_StochDep(){
+    cout << "ChooseLayers_StochDep" << endl;
     bottom_vecs_stochdept_.resize(this->layers().size());
     top_vecs_stochdept_.resize(this->layers().size());
     layers_chosen->resize(this->layers().size());
@@ -212,10 +229,12 @@ void Net<Dtype>::ChooseLayers_StochDep(){
     bottom_vecs_stochdept_.resize(idx);
     top_vecs_stochdept_.resize(idx);
     layers_chosen->resize(idx);
+    cout << "ChooseLayers_StochDep end" << endl;
 }
 
 template <typename Dtype>
 void Net<Dtype>::Backward_StochDep() {
+    cout << "Backward_StochDep" << endl;
     BackwardFromTo_StochDep();
     if (debug_info_) {
         Dtype asum_data = 0, asum_diff = 0, sumsq_data = 0, sumsq_diff = 0;
@@ -232,32 +251,40 @@ void Net<Dtype>::Backward_StochDep() {
         << "L1 norm = (" << asum_data << ", " << asum_diff << "); "
         << "L2 norm = (" << l2norm_data << ", " << l2norm_diff << ")";
     }
+    cout << "Backward_StochDep end" << endl;
 }
 
 template <typename Dtype>
 const vector<Blob<Dtype>*>& Net<Dtype>::Forward_StochDep(Dtype* loss) {
-if (loss != NULL) {
-*loss = ForwardFromTo_StochDep();
-} else {
-ForwardFromTo_StochDep();
-}
-return net_output_blobs_;
+    cout << "Forward_StochDep" << endl;
+    if (loss != NULL) {
+        *loss = ForwardFromTo_StochDep();
+    }
+    else {
+        ForwardFromTo_StochDep();
+    }
+    cout << "Forward_StochDep end" << endl;
+    return net_output_blobs_;
 }
 
 
 template <typename Dtype>
 const vector<Blob<Dtype>*>& Net<Dtype>::Forward_StochDep_Test(Dtype* loss) {
-if (loss != NULL) {
-*loss = ForwardFromTo_StochDep_Test(0, layers_.size() - 1);
-} else {
-ForwardFromTo_StochDep_Test(0, layers_.size() - 1);
-}
-return net_output_blobs_;
+    cout << "Forward_StochDep_Test" << endl;
+    if (loss != NULL) {
+        *loss = ForwardFromTo_StochDep_Test(0, layers_.size() - 1);
+    }
+    else {
+        ForwardFromTo_StochDep_Test(0, layers_.size() - 1);
+    }
+    cout << "Forward_StochDep_Test end" << endl;
+    return net_output_blobs_;
 }
 
 
 template <typename Dtype>
 const Dtype Net<Dtype>::ForwardFromTo_StochDep_Test(int start, int end) {
+    cout << "ForwardFromTo_StochDep_Test" << endl;
     CHECK_GE(start, 0);
     CHECK_LT(end, layers_.size());
     Dtype loss = 0;
@@ -277,11 +304,13 @@ const Dtype Net<Dtype>::ForwardFromTo_StochDep_Test(int start, int end) {
         }
         if (debug_info_) { ForwardDebugInfo(i); }
     }
+    cout << "ForwardFromTo_StochDep_Test end" << endl;
     return loss;
 }
 
 template <typename Dtype>
 void Net<Dtype>::ClearParamDiffs_StochDep() {
+    cout << "ClearParamDiffs_StochDep" << endl;
     const vector<int>& learnable_params_ids = learnable_params_ids_stochdept();
     for (int i = 0; i < learnable_params_ids.size(); i++) {
         int param_id = learnable_params_ids[i];
@@ -301,6 +330,7 @@ void Net<Dtype>::ClearParamDiffs_StochDep() {
                 break;
         }
     }
+    cout << "ClearParamDiffs_StochDep end" << endl;
 }
 
 
@@ -308,6 +338,7 @@ void Net<Dtype>::ClearParamDiffs_StochDep() {
 
 template <typename Dtype>
 void Solver<Dtype>::Step_StochDep(int iters) {
+    cout << "Step_StochDep" << endl;
     const int start_iter = iter_;
     const int stop_iter = iter_ + iters;
     int average_loss = this->param_.average_loss();
@@ -392,11 +423,13 @@ void Solver<Dtype>::Step_StochDep(int iters) {
             break;
         }
     }
+    cout << "Step_StochDep end" << endl;
 }
 
 
 template <typename Dtype>
 void Solver<Dtype>::Solve_StochDep(const char* resume_file) {
+    cout << "Solve_StochDep" << endl;
     CHECK(Caffe::root_solver());
     LOG(INFO) << "Solving " << net_->name();
     LOG(INFO) << "Learning Rate Policy: " << param_.lr_policy();
@@ -442,19 +475,23 @@ void Solver<Dtype>::Solve_StochDep(const char* resume_file) {
         TestAll_StochDep();
     }
     LOG(INFO) << "Optimization Done.";
+    cout << "Solve_StochDep end" << endl;
 }
 
 
 template <typename Dtype>
 void Solver<Dtype>::TestAll_StochDep() {
+    cout << "TestAll_StochDep" << endl;
     for (int test_net_id = 0; test_net_id < test_nets_.size() && !requested_early_exit_; ++test_net_id) {
         Test_StochDep(test_net_id);
     }
+    cout << "TestAll_StochDep end" << endl;
 }
 
 
 template <typename Dtype>
 void Solver<Dtype>::Test_StochDep(const int test_net_id) {
+    cout << "Test_StochDep" << endl;
     CHECK(Caffe::root_solver());
     LOG(INFO) << "Iteration " << iter_
     << ", Testing net (#" << test_net_id << ")";
@@ -526,6 +563,7 @@ void Solver<Dtype>::Test_StochDep(const int test_net_id) {
         LOG(INFO) << "    Test net output #" << i << ": " << output_name << " = "
         << mean_score << loss_msg_stream.str();
     }
+    cout << "Test_StochDep end" << endl;
 }
 
 
