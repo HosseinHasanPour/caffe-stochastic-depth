@@ -27,9 +27,6 @@ class SGDSolver : public Solver<Dtype> {
 //---------------------------------------------- MY FUNCTIONS ---------------------------------------------------------
 
   virtual void ApplyUpdate_StochDep();
-  virtual void Normalize_StochDep(int param_id);
-  virtual void Regularize_StochDep(int param_id);
-  virtual void ComputeUpdateValue_StochDep(int param_id, Dtype rate);
   virtual void ClipGradients_StochDep();
 //---------------------------------------------------------------------------------------------------------------------
   void PreSolve();
@@ -64,7 +61,6 @@ class NesterovSolver : public SGDSolver<Dtype> {
 
  protected:
   virtual void ComputeUpdateValue(int param_id, Dtype rate);
-  virtual void ComputeUpdateValue_StochDep(int param_id, Dtype rate);
 
   DISABLE_COPY_AND_ASSIGN(NesterovSolver);
 };

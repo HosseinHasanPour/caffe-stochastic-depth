@@ -46,9 +46,9 @@ void SGDSolver<Dtype>::ApplyUpdate_StochDep() {
     const vector<int>& learnable_params_ids = this->net_->learnable_params_ids_stochdept();
     for (int i = 0; i < learnable_params_ids.size(); i++) {
         int param_id = learnable_params_ids[i];
-        Normalize_StochDep(param_id);
-        Regularize_StochDep(param_id);
-        ComputeUpdateValue_StochDep(param_id, rate);
+        Normalize(param_id);
+        Regularize(param_id);
+        ComputeUpdateValue(param_id, rate);
     }
     this->net_->Update_StochDep();
 }
@@ -74,131 +74,6 @@ void SGDSolver<Dtype>::ClipGradients_StochDep() {
         }
     }
 }
-
-
-template <typename Dtype>
-void SGDSolver<Dtype>::Normalize_StochDep(int param_id) {
-    if (this->param_.iter_size() == 1) { return; }
-    // Scale gradient to counterbalance accumulation.
-    const vector<Blob<Dtype>* >& learnable_params = this->net_->learnable_params();
-    const Dtype accum_normalization = Dtype(1.) / this->param_.iter_size();
-    switch (Caffe::mode()) {
-        case Caffe::CPU: {
-            caffe_scal(learnable_params[param_id]->count(), accum_normalization,
-                       learnable_params[param_id]->mutable_cpu_diff());
-            break;
-        }
-        case Caffe::GPU: {
-#ifndef CPU_ONLY
-            caffe_gpu_scal(learnable_params[param_id]->count(), accum_normalization,
-                           learnable_params[param_id]->mutable_gpu_diff());
-#else
-            NO_GPU;
-#endif
-            break;
-        }
-        default:
-            LOG(FATAL) << "Unknown caffe mode: " << Caffe::mode();
-    }
-}
-
-
-template <typename Dtype>
-void SGDSolver<Dtype>::ComputeUpdateValue_StochDep(int param_id, Dtype rate) {
-    const vector<Blob<Dtype>*>& learnable_params = this->net_->learnable_params();
-    const vector<float>& net_params_lr = this->net_->params_lr();
-    Dtype momentum = this->param_.momentum();
-    Dtype local_rate = rate * net_params_lr[param_id];
-    // Compute the update to history, then copy it to the parameter diff.
-    switch (Caffe::mode()) {
-        case Caffe::CPU: {
-            caffe_cpu_axpby(learnable_params[param_id]->count(), local_rate,
-                            learnable_params[param_id]->cpu_diff(), momentum,
-                            history_[param_id]->mutable_cpu_data());
-            caffe_copy(learnable_params[param_id]->count(),
-                       history_[param_id]->cpu_data(),
-                       learnable_params[param_id]->mutable_cpu_diff());
-            break;
-        }
-        case Caffe::GPU: {
-#ifndef CPU_ONLY
-            sgd_update_gpu(learnable_params[param_id]->count(),
-                           learnable_params[param_id]->mutable_gpu_diff(),
-                           history_[param_id]->mutable_gpu_data(),
-                           momentum, local_rate);
-#else
-            NO_GPU;
-#endif
-            break;
-        }
-        default:
-            LOG(FATAL) << "Unknown caffe mode: " << Caffe::mode();
-    }
-}
-
-
-template <typename Dtype>
-void SGDSolver<Dtype>::Regularize_StochDep(int param_id) {
-    const vector<Blob<Dtype>*>& learnable_params = this->net_->learnable_params();
-    const vector<float>& net_params_weight_decay =
-            this->net_->params_weight_decay();
-    Dtype weight_decay = this->param_.weight_decay();
-    string regularization_type = this->param_.regularization_type();
-    Dtype local_decay = weight_decay * net_params_weight_decay[param_id];
-    switch (Caffe::mode()) {
-        case Caffe::CPU: {
-            if (local_decay) {
-                if (regularization_type == "L2") {
-                    // add weight decay
-                    caffe_axpy(learnable_params[param_id]->count(),
-                               local_decay,
-                               learnable_params[param_id]->cpu_data(),
-                               learnable_params[param_id]->mutable_cpu_diff());
-                } else if (regularization_type == "L1") {
-                    caffe_cpu_sign(learnable_params[param_id]->count(),
-                                   learnable_params[param_id]->cpu_data(),
-                                   temp_[param_id]->mutable_cpu_data());
-                    caffe_axpy(learnable_params[param_id]->count(),
-                               local_decay,
-                               temp_[param_id]->cpu_data(),
-                               learnable_params[param_id]->mutable_cpu_diff());
-                } else {
-                    LOG(FATAL) << "Unknown regularization type: " << regularization_type;
-                }
-            }
-            break;
-        }
-        case Caffe::GPU: {
-#ifndef CPU_ONLY
-            if (local_decay) {
-                if (regularization_type == "L2") {
-                    // add weight decay
-                    caffe_gpu_axpy(learnable_params[param_id]->count(),
-                                   local_decay,
-                                   learnable_params[param_id]->gpu_data(),
-                                   learnable_params[param_id]->mutable_gpu_diff());
-                } else if (regularization_type == "L1") {
-                    caffe_gpu_sign(learnable_params[param_id]->count(),
-                                   learnable_params[param_id]->gpu_data(),
-                                   temp_[param_id]->mutable_gpu_data());
-                    caffe_gpu_axpy(learnable_params[param_id]->count(),
-                                   local_decay,
-                                   temp_[param_id]->gpu_data(),
-                                   learnable_params[param_id]->mutable_gpu_diff());
-                } else {
-                    LOG(FATAL) << "Unknown regularization type: " << regularization_type;
-                }
-            }
-#else
-            NO_GPU;
-#endif
-            break;
-        }
-        default:
-            LOG(FATAL) << "Unknown caffe mode: " << Caffe::mode();
-    }
-}
-
 
 
 //--------------------------------------- ORIGINAL CAFFE ---------------------------------------------------------------
