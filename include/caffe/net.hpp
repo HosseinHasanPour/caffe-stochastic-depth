@@ -42,8 +42,8 @@ class Net {
   void printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx);	
   Dtype ForwardBackward_StochDep();
   void BackwardFromTo_StochDep();
-  void Backward_StochDep(std::vector<int>*);
-  Dtype ForwardFromTo_StochDep(std::vector<int>*);
+  void Backward_StochDep();
+  Dtype ForwardFromTo_StochDep();
   const vector<Blob<Dtype>*>& Forward_StochDep(Dtype* loss);
   void ChooseLayers_StochDep();
   void standardResLayer(int & elts, int & idx, double ran, double prob);
