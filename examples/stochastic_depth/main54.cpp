@@ -155,8 +155,8 @@ void Net<Dtype>::BackwardFromTo_StochDep() {
 template<typename Dtype>
 Dtype Net<Dtype>::ForwardBackward_StochDep() {
     Dtype loss;
-    Forward_StochDep(layers_chosen, &loss);
-    Backward_StochDep(layers_chosen);
+    Forward_StochDep(&loss);
+    Backward_StochDep();
     return loss;
 }
 
@@ -216,7 +216,7 @@ void Net<Dtype>::ChooseLayers_StochDep(){
 
 template <typename Dtype>
 void Net<Dtype>::Backward_StochDep() {
-    BackwardFromTo_StochDep(layers_chosen);
+    BackwardFromTo_StochDep();
     if (debug_info_) {
         Dtype asum_data = 0, asum_diff = 0, sumsq_data = 0, sumsq_diff = 0;
         for (int i = 0; i < learnable_params_.size(); ++i) {
@@ -236,9 +236,9 @@ void Net<Dtype>::Backward_StochDep() {
 template <typename Dtype>
 const vector<Blob<Dtype>*>& Net<Dtype>::Forward_StochDep(Dtype* loss) {
 if (loss != NULL) {
-*loss = ForwardFromTo_StochDep(layers_chosen);
+*loss = ForwardFromTo_StochDep();
 } else {
-ForwardFromTo_StochDep(layers_chosen);
+ForwardFromTo_StochDep();
 }
 return net_output_blobs_;
 }
@@ -315,8 +315,8 @@ void Solver<Dtype>::Step_StochDep(int iters) {
 
     while (iter_ < stop_iter) {
         // zero-init the params
-        net_->ChooseLayers_StochDep(layers_chosen);
-        net_->SetLearnableParams_StochDep(layers_chosen);
+        net_->ChooseLayers_StochDep();
+        net_->SetLearnableParams_StochDep();
         net_->ClearParamDiffs_StochDep();
         if (param_.test_interval() && iter_ % param_.test_interval() == 0
             && (iter_ > 0 || param_.test_initialization())
@@ -338,8 +338,7 @@ void Solver<Dtype>::Step_StochDep(int iters) {
         Dtype loss = 0;
 
         for (int i = 0; i < param_.iter_size(); ++i) {
-//            cout << "learnable_params_stochdep: " << net_->learnable_params_ids_stochdept().size() <<"\t layers chosen: " << (*layers_chosen).size() << endl;
-            loss += net_->ForwardBackward_StochDep(layers_chosen);
+            loss += net_->ForwardBackward_StochDep();
         }
         loss /= param_.iter_size();
         // average the loss across iterations for smoothed reporting
