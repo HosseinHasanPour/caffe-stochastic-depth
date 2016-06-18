@@ -216,7 +216,7 @@ void Net<Dtype>::ChooseLayers_StochDep(){
         standardResLayer(elts, idx, ran, prob);
         block_num += 1.0;
     }
-    cou << "5" << endl;
+    cout << "6" << endl;
     ran = (double) rand()/RAND_MAX;
     prob = 1 - 0.5*(block_num)/num_blocks;
     transitionResLayer(elts, idx, ran, prob);
@@ -228,7 +228,7 @@ void Net<Dtype>::ChooseLayers_StochDep(){
         standardResLayer(elts, idx, ran, prob);
         block_num += 1.0;
     }
-    cout << "6" << endl;
+    cout << "7" << endl;
 
     for (int i = 0; i < 4; i++) {
         layerHelper_StochDep(elts, idx, 1, 1, 0, true);
@@ -576,5 +576,3 @@ void Solver<Dtype>::Test_StochDep(const int test_net_id) {
 
 
 //------------------------------------------------ SGD SOLVER ----------------------------------------------------------
-
-
