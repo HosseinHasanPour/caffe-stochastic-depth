@@ -40,20 +40,20 @@ class Net {
   	
 // -------- MY FUNCTIONS ---------------------------------------------------------------------------------------------
   void printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx);	
-  Dtype ForwardBackward_StochDep(vector<int>* layers_chosen); 
-  void BackwardFromTo_StochDep(vector<int>* layers_chosen);
+  Dtype ForwardBackward_StochDep();
+  void BackwardFromTo_StochDep();
   void Backward_StochDep(std::vector<int>*);
   Dtype ForwardFromTo_StochDep(std::vector<int>*);
-  const vector<Blob<Dtype>*>& Forward_StochDep(vector<int>* layers_chosen, Dtype* loss);
-  void ChooseLayers_StochDep(vector<int>* layers_chosen);  
-  void standardResLayer(int & elts, int & idx, vector<int>* layers_chosen, double ran, double prob);
-  void transitionResLayer(int & elts, int& idx, vector<int>* layers_chosen, double ran, double prob);
-  void layerHelper_StochDep(int & elts, int& idx, vector<int>* layers_chosen, int  elt_incr, int  idx_incr,int  bottom_incr, bool usetop);
+  const vector<Blob<Dtype>*>& Forward_StochDep(Dtype* loss);
+  void ChooseLayers_StochDep();
+  void standardResLayer(int & elts, int & idx, double ran, double prob);
+  void transitionResLayer(int & elts, int& idx, double ran, double prob);
+  void layerHelper_StochDep(int & elts, int& idx, int  elt_incr, int  idx_incr,int  bottom_incr, bool usetop);
   void AppendParam_StochDep(const NetParameter& param, const int layer_id, const int param_id);
   inline const map<int, vector<Blob<Dtype>*>* >  layer_num_to_learnable_params() const  {
       return layer_num_to_learnable_params_;
   }
-  void SetLearnableParams_StochDep(vector<int>* layers_chosen);
+  void SetLearnableParams_StochDep();
   inline const  vector<int> learnable_params_ids_stochdept() const {
       return learnable_params_ids_stochdept_;
   }
@@ -292,6 +292,7 @@ class Net {
   map<int, vector<int>* > layer_num_to_learnable_params_idxs;
   vector<int> learnable_params_ids_stochdept_;
   vector<double> test_scaling_stochdept_;
+  vector<int>* layers_chosen;
 //--------------------------------------------------------------------------------------------------------------------
 
 
