@@ -180,14 +180,18 @@ template<typename Dtype>
 void Net<Dtype>::ChooseLayers_StochDep(){
     cout << "ChooseLayers_StochDep" << endl;
     bottom_vecs_stochdept_.resize(this->layers().size());
+    cout << "1" << endl;
+
     top_vecs_stochdept_.resize(this->layers().size());
+    cout << "2" << endl;
     layers_chosen->resize(this->layers().size());
+    cout << "3" << endl;
     int elts = 0;
     int idx = 0;
     for (int i = 0; i < 4; i++){
         layerHelper_StochDep(elts, idx, 1, 1, 0, true);
-    }
-
+        }
+    cout << "4"<< endl;
     srand((unsigned)time(NULL));
     double block_num  = 0;
     double num_blocks = 53;
@@ -200,6 +204,7 @@ void Net<Dtype>::ChooseLayers_StochDep(){
         standardResLayer(elts, idx, ran, prob);
         block_num += 1.0;
     }
+    cout << "5" << endl;
     ran = (double) rand()/RAND_MAX;
     prob = 1 - 0.5*(block_num)/num_blocks;
     transitionResLayer(elts, idx, ran, prob);
@@ -211,6 +216,7 @@ void Net<Dtype>::ChooseLayers_StochDep(){
         standardResLayer(elts, idx, ran, prob);
         block_num += 1.0;
     }
+    cou << "5" << endl;
     ran = (double) rand()/RAND_MAX;
     prob = 1 - 0.5*(block_num)/num_blocks;
     transitionResLayer(elts, idx, ran, prob);
@@ -222,6 +228,7 @@ void Net<Dtype>::ChooseLayers_StochDep(){
         standardResLayer(elts, idx, ran, prob);
         block_num += 1.0;
     }
+    cout << "6" << endl;
 
     for (int i = 0; i < 4; i++) {
         layerHelper_StochDep(elts, idx, 1, 1, 0, true);
