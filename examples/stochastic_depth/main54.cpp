@@ -41,8 +41,8 @@ template <typename Dtype>
 void Net<Dtype>::SetLearnableParams_StochDep() {
     cout << "SetLearnableParams_StochDep" << endl;
     learnable_params_ids_stochdept_.resize(0);
-    for (int i = 0; i < (*layers_chosen).size(); i++) {
-        int layer_id = (*layers_chosen)[i];
+    for (int i = 0; i < layers_chosen.size(); i++) {
+        int layer_id = layers_chosen[i];
         typedef typename map<int, vector<int>* >::const_iterator iter;
         iter pair;
         if (layer_num_to_learnable_params_.count(layer_id) > 0) {
@@ -101,7 +101,7 @@ void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, int elt_incr, int id
         top_vecs_stochdept_[idx] = bottom_vecs_[elts + bottom_incr];
     }
 
-    (*layers_chosen)[idx] = elts;
+    layers_chosen[idx] = elts;
 
 //    // prints
 //
@@ -126,8 +126,8 @@ Dtype Net<Dtype>::ForwardFromTo_StochDep() {
     cout << "ForwardFromTo_StochDep" << endl;
     Dtype loss = 0;
     int layer_idx;
-    for (int i = 0; i < layers_chosen->size(); i++) {
-        layer_idx = (*layers_chosen)[i];
+    for (int i = 0; i < layers_chosen.size(); i++) {
+        layer_idx = layers_chosen[i];
         shared_ptr<Layer<Dtype> > curr_layer = layers_[layer_idx];
 
         vector<Blob<Dtype>*> curr_bottom = bottom_vecs_stochdept_[i];
@@ -156,8 +156,8 @@ template <typename Dtype>
 void Net<Dtype>::BackwardFromTo_StochDep() {
     cout << "BackwardFromTo_StochDep" << endl;
     int layer_idx;
-    for (int i = layers_chosen->size() - 1; i >= 0; i--) {
-        layer_idx = (*layers_chosen)[i];
+    for (int i = layers_chosen.size() - 1; i >= 0; i--) {
+        layer_idx = layers_chosen[i];
         if (layer_need_backward_[layer_idx]) {
             layers_[layer_idx]->Backward(top_vecs_stochdept_[i], bottom_need_backward_[layer_idx], bottom_vecs_stochdept_[i]);
             if (debug_info_) { BackwardDebugInfo(layer_idx); }
@@ -184,7 +184,7 @@ void Net<Dtype>::ChooseLayers_StochDep(){
 
     top_vecs_stochdept_.resize(this->layers().size());
     cout << "2" << endl;
-    layers_chosen->resize(this->layers().size());
+    layers_chosen.resize(this->layers().size());
     cout << "3" << endl;
     int elts = 0;
     int idx = 0;
@@ -235,7 +235,7 @@ void Net<Dtype>::ChooseLayers_StochDep(){
     }
     bottom_vecs_stochdept_.resize(idx);
     top_vecs_stochdept_.resize(idx);
-    layers_chosen->resize(idx);
+    layers_chosen.resize(idx);
     cout << "ChooseLayers_StochDep end" << endl;
 }
 

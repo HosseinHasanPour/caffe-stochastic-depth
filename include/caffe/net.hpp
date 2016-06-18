@@ -37,9 +37,9 @@ class Net {
    *
    */
   const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
-  	
+
 // -------- MY FUNCTIONS ---------------------------------------------------------------------------------------------
-  void printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx);	
+  void printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx);
   Dtype ForwardBackward_StochDep();
   void BackwardFromTo_StochDep();
   void Backward_StochDep();
@@ -85,7 +85,7 @@ class Net {
    * included.
    */
 
-  
+
   Dtype ForwardFromTo(int start, int end);
   Dtype ForwardFrom(int start);
   Dtype ForwardTo(int end);
@@ -292,7 +292,7 @@ class Net {
   map<int, vector<int>* > layer_num_to_learnable_params_idxs;
   vector<int> learnable_params_ids_stochdept_;
   vector<double> test_scaling_stochdept_;
-  vector<int>* layers_chosen;
+  vector<int> layers_chosen;
 //--------------------------------------------------------------------------------------------------------------------
 
 
