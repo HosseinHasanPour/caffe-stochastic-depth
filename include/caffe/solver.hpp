@@ -51,7 +51,7 @@ class Solver {
    void Solve(const char* resume_file = NULL);
    void Step_StochDep(int iters);
 protected:
-    virtual void ApplyUpdate_StochDep() = 0;
+    virtual void ApplyUpdate() = 0;
     void TestAll_StochDep();
     void Test_StochDep(const int test_net_id = 0);
 public:
@@ -107,7 +107,6 @@ public:
 
  protected:
   // Make and apply the update value for the current iteration.
-  virtual void ApplyUpdate() = 0;
   string SnapshotFilename(const string extension);
   string SnapshotToBinaryProto();
   string SnapshotToHDF5();
