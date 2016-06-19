@@ -14,6 +14,236 @@ namespace caffe {
 //---------------------- MY FUNCTIONS --------------------------------------
 
 
+template <typename Dtype>
+void Solver<Dtype>::Step_StochDep(int iters) {
+    // cout << "Step_StochDep" << endl;
+    const int start_iter = iter_;
+    const int stop_iter = iter_ + iters;
+    int average_loss = this->param_.average_loss();
+    losses_.clear();
+    smoothed_loss_ = 0;
+
+    while (iter_ < stop_iter) {
+        // zero-init the params
+        net_->ChooseLayers_StochDep();
+        net_->SetLearnableParams_StochDep();
+        net_->ClearParamDiffs_StochDep();
+        if (param_.test_interval() && iter_ % param_.test_interval() == 0
+            && (iter_ > 0 || param_.test_initialization())
+            && Caffe::root_solver()) {
+            TestAll_StochDep();
+            if (requested_early_exit_) {
+                // Break out of the while loop because stop was requested while testing.
+                break;
+            }
+        }
+
+        for (int i = 0; i < callbacks_.size(); ++i) {
+            cout << "--------------------callback1 called in step_stochdep-------------------" << endl;
+            callbacks_[i]->on_start();
+        }
+        const bool display = param_.display() && iter_ % param_.display() == 0;
+        net_->set_debug_info(display && param_.debug_info());
+        // accumulate the loss and gradient
+        Dtype loss = 0;
+
+        for (int i = 0; i < param_.iter_size(); ++i) {
+            loss += net_->ForwardBackward_StochDep();
+        }
+        loss /= param_.iter_size();
+        // average the loss across iterations for smoothed reporting
+        UpdateSmoothedLoss(loss, start_iter, average_loss);
+        if (display) {
+            LOG_IF(INFO, Caffe::root_solver()) << "Iteration " << iter_
+            << ", loss = " << smoothed_loss_;
+            const vector<Blob<Dtype>*>& result = net_->output_blobs();
+            int score_index = 0;
+            for (int j = 0; j < result.size(); ++j) {
+                const Dtype* result_vec = result[j]->cpu_data();
+                const string& output_name =
+                        net_->blob_names()[net_->output_blob_indices()[j]];
+                const Dtype loss_weight =
+                        net_->blob_loss_weights()[net_->output_blob_indices()[j]];
+                for (int k = 0; k < result[j]->count(); ++k) {
+                    ostringstream loss_msg_stream;
+                    if (loss_weight) {
+                        loss_msg_stream << " (* " << loss_weight
+                        << " = " << loss_weight * result_vec[k] << " loss)";
+                    }
+                    LOG_IF(INFO, Caffe::root_solver()) << "    Train net output #"
+                    << score_index++ << ": " << output_name << " = "
+                    << result_vec[k] << loss_msg_stream.str();
+                }
+            }
+        }
+        for (int i = 0; i < callbacks_.size(); ++i) {
+            cout << "--------------------callback2 called in step_stochdep-------------------" << endl  ;
+            callbacks_[i]->on_gradients_ready();
+        }
+        ApplyUpdate_StochDep();
+
+        // Increment the internal iter_ counter -- its value should always indicate
+        // the number of times the weights have been updated.
+        ++iter_;
+
+        SolverAction::Enum request = GetRequestedAction();
+
+        // Save a snapshot if needed.
+        if ((param_.snapshot()
+             && iter_ % param_.snapshot() == 0
+             && Caffe::root_solver()) ||
+            (request == SolverAction::SNAPSHOT)) {
+            Snapshot();
+        }
+        if (SolverAction::STOP == request) {
+            requested_early_exit_ = true;
+            // Break out of training loop.
+            break;
+        }
+    }
+    // cout << "Step_StochDep end" << endl;
+}
+
+
+template <typename Dtype>
+void Solver<Dtype>::Solve(const char* resume_file) {
+    // cout << "Solve_StochDep" << endl;
+    CHECK(Caffe::root_solver());
+    LOG(INFO) << "Solving " << net_->name();
+    LOG(INFO) << "Learning Rate Policy: " << param_.lr_policy();
+
+    // Initialize to false every time we start solving.
+    requested_early_exit_ = false;
+
+    if (resume_file) {
+        LOG(INFO) << "Restoring previous solver status from " << resume_file;
+        Restore(resume_file);
+    }
+
+    // For a network that is trained by the solver, no bottom or top vecs
+    // should be given, and we will just provide dummy vecs.
+    int start_iter = iter_;
+    Step_StochDep(param_.max_iter() - iter_);
+    // If we haven't already, save a snapshot after optimization, unless
+    // overridden by setting snapshot_after_train := false
+    if (param_.snapshot_after_train()
+        && (!param_.snapshot() || iter_ % param_.snapshot() != 0)) {
+        Snapshot();
+    }
+    if (requested_early_exit_) {
+        LOG(INFO) << "Optimization stopped early.";
+        return;
+    }
+    // After the optimization is done, run an additional train and test pass to
+    // display the train and test loss/outputs if appropriate (based on the
+    // display and test_interval settings, respectively).  Unlike in the rest of
+    // training, for the train net we only run a forward pass as we've already
+    // updated the parameters "max_iter" times -- this final pass is only done to
+    // display the loss, which is computed in the forward pass.
+    if (param_.display() && iter_ % param_.display() == 0) {
+        int average_loss = this->param_.average_loss();
+        Dtype loss;
+        net_->Forward_StochDep_Test(&loss);
+
+        UpdateSmoothedLoss(loss, start_iter, average_loss);
+
+        LOG(INFO) << "Iteration " << iter_ << ", loss = " << smoothed_loss_;
+    }
+    if (param_.test_interval() && iter_ % param_.test_interval() == 0) {
+        TestAll_StochDep();
+    }
+    LOG(INFO) << "Optimization Done.";
+    // cout << "Solve_StochDep end" << endl;
+}
+
+
+template <typename Dtype>
+void Solver<Dtype>::TestAll_StochDep() {
+    // cout << "TestAll_StochDep" << endl;
+    for (int test_net_id = 0; test_net_id < test_nets_.size() && !requested_early_exit_; ++test_net_id) {
+        Test_StochDep(test_net_id);
+    }
+    // cout << "TestAll_StochDep end" << endl;
+}
+
+
+template <typename Dtype>
+void Solver<Dtype>::Test_StochDep(const int test_net_id) {
+    // cout << "Test_StochDep" << endl;
+    CHECK(Caffe::root_solver());
+    LOG(INFO) << "Iteration " << iter_
+    << ", Testing net (#" << test_net_id << ")";
+    CHECK_NOTNULL(test_nets_[test_net_id].get())->
+            ShareTrainedLayersWith(net_.get());
+    vector<Dtype> test_score;
+    vector<int> test_score_output_id;
+    const shared_ptr<Net<Dtype> >& test_net = test_nets_[test_net_id];
+    Dtype loss = 0;
+    for (int i = 0; i < param_.test_iter(test_net_id); ++i) {
+        SolverAction::Enum request = GetRequestedAction();
+        // Check to see if stoppage of testing/training has been requested.
+        while (request != SolverAction::NONE) {
+            if (SolverAction::SNAPSHOT == request) {
+                Snapshot();
+            } else if (SolverAction::STOP == request) {
+                requested_early_exit_ = true;
+            }
+            request = GetRequestedAction();
+        }
+        if (requested_early_exit_) {
+            // break out of test loop.
+            break;
+        }
+
+        Dtype iter_loss;
+        const vector<Blob<Dtype>*>& result =
+                                          test_net->Forward_StochDep_Test(&iter_loss);
+        if (param_.test_compute_loss()) {
+            loss += iter_loss;
+        }
+        if (i == 0) {
+            for (int j = 0; j < result.size(); ++j) {
+                const Dtype* result_vec = result[j]->cpu_data();
+                for (int k = 0; k < result[j]->count(); ++k) {
+                    test_score.push_back(result_vec[k]);
+                    test_score_output_id.push_back(j);
+                }
+            }
+        } else {
+            int idx = 0;
+            for (int j = 0; j < result.size(); ++j) {
+                const Dtype* result_vec = result[j]->cpu_data();
+                for (int k = 0; k < result[j]->count(); ++k) {
+                    test_score[idx++] += result_vec[k];
+                }
+            }
+        }
+    }
+    if (requested_early_exit_) {
+        LOG(INFO)     << "Test interrupted.";
+        return;
+    }
+    if (param_.test_compute_loss()) {
+        loss /= param_.test_iter(test_net_id);
+        LOG(INFO) << "Test loss: " << loss;
+    }
+    for (int i = 0; i < test_score.size(); ++i) {
+        const int output_blob_index =
+                test_net->output_blob_indices()[test_score_output_id[i]];
+        const string& output_name = test_net->blob_names()[output_blob_index];
+        const Dtype loss_weight = test_net->blob_loss_weights()[output_blob_index];
+        ostringstream loss_msg_stream;
+        const Dtype mean_score = test_score[i] / param_.test_iter(test_net_id);
+        if (loss_weight) {
+            loss_msg_stream << " (* " << loss_weight
+            << " = " << loss_weight * mean_score << " loss)";
+        }
+        LOG(INFO) << "    Test net output #" << i << ": " << output_name << " = "
+        << mean_score << loss_msg_stream.str();
+    }
+    // cout << "Test_StochDep end" << endl;
+}
+
 // ------------------------- ORIGINAL CAFFE -------------------------------------------
 
 template<typename Dtype>
@@ -276,55 +506,6 @@ void Solver<Dtype>::Step(int iters) {
       break;
     }
   }
-}
-
-template <typename Dtype>
-void Solver<Dtype>::Solve(const char* resume_file) {
-  CHECK(Caffe::root_solver());
-  LOG(INFO) << "Solving " << net_->name();
-  LOG(INFO) << "Learning Rate Policy: " << param_.lr_policy();
-
-  // Initialize to false every time we start solving.
-  requested_early_exit_ = false;
-
-  if (resume_file) {
-    LOG(INFO) << "Restoring previous solver status from " << resume_file;
-    Restore(resume_file);
-  }
-
-  // For a network that is trained by the solver, no bottom or top vecs
-  // should be given, and we will just provide dummy vecs.
-  int start_iter = iter_;
-  Step(param_.max_iter() - iter_);
-  // If we haven't already, save a snapshot after optimization, unless
-  // overridden by setting snapshot_after_train := false
-  if (param_.snapshot_after_train()
-      && (!param_.snapshot() || iter_ % param_.snapshot() != 0)) {
-    Snapshot();
-  }
-  if (requested_early_exit_) {
-    LOG(INFO) << "Optimization stopped early.";
-    return;
-  }
-  // After the optimization is done, run an additional train and test pass to
-  // display the train and test loss/outputs if appropriate (based on the
-  // display and test_interval settings, respectively).  Unlike in the rest of
-  // training, for the train net we only run a forward pass as we've already
-  // updated the parameters "max_iter" times -- this final pass is only done to
-  // display the loss, which is computed in the forward pass.
-  if (param_.display() && iter_ % param_.display() == 0) {
-    int average_loss = this->param_.average_loss();
-    Dtype loss;
-    net_->Forward(&loss);
-
-    UpdateSmoothedLoss(loss, start_iter, average_loss);
-
-    LOG(INFO) << "Iteration " << iter_ << ", loss = " << smoothed_loss_;
-  }
-  if (param_.test_interval() && iter_ % param_.test_interval() == 0) {
-    TestAll();
-  }
-  LOG(INFO) << "Optimization Done.";
 }
 
 template <typename Dtype>

@@ -29,8 +29,7 @@ class Net {
       const Net* root_net = NULL);
   virtual ~Net() {}
 
-  /// @brief Initialize a network with a NetParameter.
-  void Init(const NetParameter& param);
+
 
   /**
    * @brief Run Forward and return the result.
@@ -39,6 +38,8 @@ class Net {
   const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
 
 // -------- MY FUNCTIONS ---------------------------------------------------------------------------------------------
+/// @brief Initialize a network with a NetParameter.
+  void Init(const NetParameter& param);
   void printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx);
   Dtype ForwardBackward_StochDep();
   void BackwardFromTo_StochDep();
@@ -85,10 +86,6 @@ class Net {
    * included.
    */
 
-
-  Dtype ForwardFromTo(int start, int end);
-  Dtype ForwardFrom(int start);
-  Dtype ForwardTo(int end);
   /// @brief DEPRECATED; set input blobs then use Forward() instead.
   const vector<Blob<Dtype>*>& Forward(const vector<Blob<Dtype>* > & bottom,
       Dtype* loss = NULL);
@@ -97,18 +94,12 @@ class Net {
    * @brief Zeroes out the diffs of all net parameters.
    *        Should be run before Backward.
    */
-  void ClearParamDiffs();
 
   /**
    * The network backward should take no input and output, since it solely
    * computes the gradient w.r.t the parameters, and the data has already been
    * provided during the forward pass.
    */
-
-  void Backward();
-  void BackwardFromTo(int start, int end);
-  void BackwardFrom(int start);
-  void BackwardTo(int end);
 
   /**
    * @brief Reshape all layers from bottom to top.
@@ -117,15 +108,8 @@ class Net {
    * a forward pass, e.g. to compute output feature size.
    */
   void Reshape();
-  Dtype ForwardBackward()  {
-    Dtype loss;
-    Forward(&loss);
-    Backward();
-    return loss;
-  };
 
   /// @brief Updates the network weights based on the diff values computed.
-  void Update();
   /**
    * @brief Shares weight data of owner blobs with shared blobs.
    *
