@@ -1,6 +1,6 @@
 import pylab
 
-list_of_files = [['stoch_train_loss14.txt', 'Stochastic Depth'], ['reg_train_loss14.txt', 'Reguar Depth']]
+list_of_files = [['54net/stoch_train_loss.txt', 'Stochastic Depth'], ['54net/reg_train_loss.txt', 'Reguar Depth']]
 
 datalist = [ ( pylab.loadtxt(filename), label ) for filename, label in list_of_files ]
 
@@ -8,9 +8,9 @@ for data, label in datalist:
     pylab.plot( data[:,0], data[:,1], label=label )
 
 pylab.legend()
-pylab.title("14 Block Net")
+pylab.title("54 Block Net Training Loss vs Iterations")
 pylab.xlabel("Iterations")
-pylab.ylabel("Training Loss")
+pylab.ylabel("Train Loss")
 pylab.show()
 
 
