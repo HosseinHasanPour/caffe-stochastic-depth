@@ -41,17 +41,6 @@ Dtype Net<Dtype>::ForwardFromTo_StochDep() {
     return loss;
 }
 
-template<typename Dtype>
-void Net<Dtype>::printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx) {
-    // cout << "printvecblobs" << endl;
-    for (int i = 0; i < vec[idx].size(); i++) {
-        Blob<Dtype>* blo= vec[idx][i];
-        //// cout << blo->shape(0) << " " << blo->shape(1) << " " << blo->shape(2) << " " <<  blo->shape(3)  << endl;
-        //// cout << blo << endl;
-    }
-    // cout << "printvecblobs end" << endl;
-}
-
 template <typename Dtype>
 void Net<Dtype>::BackwardFromTo_StochDep() {
     // cout << "BackwardFromTo_StochDep" << endl;
