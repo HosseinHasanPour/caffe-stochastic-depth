@@ -49,7 +49,7 @@ class Solver {
 
 //------------------------------------------- MY FUNCTIONS -----------------------------------------------------------
    void Solve(const char* resume_file = NULL);
-   void Step_StochDep(int iters);
+   void Step(int iters);
 protected:
     virtual void ApplyUpdate() = 0;
     void TestAll_StochDep();

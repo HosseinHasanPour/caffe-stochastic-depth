@@ -15,7 +15,7 @@ namespace caffe {
 
 
 template <typename Dtype>
-void Solver<Dtype>::Step_StochDep(int iters) {
+void Solver<Dtype>::Step(int iters) {
     // cout << "Step_StochDep" << endl;
     const int start_iter = iter_;
     const int stop_iter = iter_ + iters;
@@ -39,7 +39,7 @@ void Solver<Dtype>::Step_StochDep(int iters) {
         }
 
         for (int i = 0; i < callbacks_.size(); ++i) {
-            cout << "--------------------callback1 called in step_stochdep-------------------" << endl;
+            cout << "--------------------callback1 called in step-------------------" << endl;
             callbacks_[i]->on_start();
         }
         const bool display = param_.display() && iter_ % param_.display() == 0;
@@ -77,7 +77,7 @@ void Solver<Dtype>::Step_StochDep(int iters) {
             }
         }
         for (int i = 0; i < callbacks_.size(); ++i) {
-            cout << "--------------------callback2 called in step_stochdep-------------------" << endl  ;
+            cout << "--------------------callback2 called in step-------------------" << endl  ;
             callbacks_[i]->on_gradients_ready();
         }
         ApplyUpdate();
@@ -123,7 +123,7 @@ void Solver<Dtype>::Solve(const char* resume_file) {
     // For a network that is trained by the solver, no bottom or top vecs
     // should be given, and we will just provide dummy vecs.
     int start_iter = iter_;
-    Step_StochDep(param_.max_iter() - iter_);
+    Step(param_.max_iter() - iter_);
     // If we haven't already, save a snapshot after optimization, unless
     // overridden by setting snapshot_after_train := false
     if (param_.snapshot_after_train()
