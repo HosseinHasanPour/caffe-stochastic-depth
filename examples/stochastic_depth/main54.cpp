@@ -322,7 +322,7 @@ template <typename Dtype>
 void Solver<Dtype>::Step_StochDep(int iters) {
     // cout << "Step_StochDep" << endl;
     const int start_iter = iter_;
-    const int stop_iter = iter_ + 400;
+    const int stop_iter = iter_ + 12000;
     int average_loss = this->param_.average_loss();
     losses_.clear();
     smoothed_loss_ = 0;
