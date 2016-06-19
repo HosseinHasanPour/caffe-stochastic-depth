@@ -8,7 +8,7 @@ layer {
     crop_size: 32
   }
   data_param {
-    source: "/scratch/pas282/caffe/examples/cifar10/cifar10_train_leveldb_padding2"
+    source: "/scratch/pas282/caffe/examples/cifar10/cifar10_train_leveldb_padding1"
     batch_size: 128
     backend: LEVELDB
   }
