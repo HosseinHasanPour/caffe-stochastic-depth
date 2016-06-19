@@ -383,7 +383,7 @@ RegisterBrewFunction(test);
 //   LOG(INFO) << "*** Benchmark ends ***";
 //   return 0;
 // }
-RegisterBrewFunction(time);
+// RegisterBrewFunction(time);
 
 int main(int argc, char** argv) {
   // Print output to stderr (while still logging).
