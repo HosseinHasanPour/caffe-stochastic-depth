@@ -415,4 +415,3 @@ int main(int argc, char** argv) {
     gflags::ShowUsageWithFlagsRestrict(argv[0], "tools/caffe");
   }
 }
-    FLAGS_iterations << " ms.";
