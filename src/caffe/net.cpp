@@ -385,6 +385,7 @@ template <typename Dtype>
 void Net<Dtype>:: StandardHelperTest(double prob) {
   for (int i = 0; i < 10; i++){
     if (i == 9) {
+      cout << "prob: " << prob << endl;
       test_scaling_stochdept_.push_back(prob);
     }
     else {
@@ -397,6 +398,7 @@ template <typename Dtype>
 void Net<Dtype>:: TransitionHelperTest(double prob) {
   for (int i = 0; i < 13; i++){
     if (i == 12) {
+      cout << "prob: " << prob << endl;
       test_scaling_stochdept_.push_back(prob);
     }
     else {

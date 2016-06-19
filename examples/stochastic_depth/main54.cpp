@@ -66,7 +66,7 @@ void Net<Dtype>::standardResLayer(int & elts, int & idx, double ran, double prob
     }
     else{  // skip res block
         layerHelper_StochDep(elts, idx, 10, 1, 10, false);
-       cout << "skipping block: " << elts << endl;
+      ////  cout << "skipping block: " << elts << endl;
     }
     // cout << "standardResLayer end" << endl;
 }
@@ -84,7 +84,7 @@ void Net<Dtype>::transitionResLayer(int & elts, int& idx, double ran, double pro
         layerHelper_StochDep(elts, idx, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, 1, 1, 0, true);
         layerHelper_StochDep(elts, idx, 9, 1, 9, false);
-		cout << "skipping block: " << elts << endl;
+		//// cout << "skipping block: " << elts << endl;
     }
     // cout << "transitionResLayer end" << endl;
 }
@@ -322,7 +322,7 @@ template <typename Dtype>
 void Solver<Dtype>::Step_StochDep(int iters) {
     // cout << "Step_StochDep" << endl;
     const int start_iter = iter_;
-    const int stop_iter = iter_ + 12000;
+    const int stop_iter = iter_ + iters;
     int average_loss = this->param_.average_loss();
     losses_.clear();
     smoothed_loss_ = 0;
