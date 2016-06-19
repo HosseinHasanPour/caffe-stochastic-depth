@@ -35,16 +35,15 @@ class Net {
    * @brief Run Forward and return the result.
    *
    */
-  const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
 
 // -------- MY FUNCTIONS ---------------------------------------------------------------------------------------------
 /// @brief Initialize a network with a NetParameter.
   void Init(const NetParameter& param);
+  const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
   Dtype ForwardBackward_StochDep();
   void BackwardFromTo_StochDep();
   void Backward_StochDep();
   Dtype ForwardFromTo_StochDep();
-  const vector<Blob<Dtype>*>& Forward(Dtype* loss);
   void ChooseLayers_StochDep();
   void standardResLayer(int & elts, int & idx, double ran, double prob);
   void transitionResLayer(int & elts, int& idx, double ran, double prob);
