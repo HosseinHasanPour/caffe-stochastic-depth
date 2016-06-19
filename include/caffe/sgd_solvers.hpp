@@ -26,7 +26,7 @@ class SGDSolver : public Solver<Dtype> {
  protected:
 //---------------------------------------------- MY FUNCTIONS ---------------------------------------------------------
 
-  virtual void ApplyUpdate_StochDep();
+  virtual void ApplyUpdate();
   virtual void ClipGradients_StochDep();
 //---------------------------------------------------------------------------------------------------------------------
   void PreSolve();

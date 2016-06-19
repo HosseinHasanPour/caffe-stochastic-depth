@@ -36,7 +36,7 @@ namespace caffe {
 
 
 template <typename Dtype>
-void SGDSolver<Dtype>::ApplyUpdate_StochDep() {
+void SGDSolver<Dtype>::ApplyUpdate() {
     CHECK(Caffe::root_solver());
     Dtype rate = GetLearningRate();
     if (this->param_.display() && this->iter_ % this->param_.display() == 0) {
