@@ -322,7 +322,7 @@ template <typename Dtype>
 void Solver<Dtype>::Step_StochDep(int iters) {
     // cout << "Step_StochDep" << endl;
     const int start_iter = iter_;
-    const int stop_iter = iter_ + iters;
+    const int stop_iter = iter_ + 400;
     int average_loss = this->param_.average_loss();
     losses_.clear();
     smoothed_loss_ = 0;
@@ -351,7 +351,7 @@ void Solver<Dtype>::Step_StochDep(int iters) {
         // accumulate the loss and gradient
         Dtype loss = 0;
 
-        for (int i = 0; i < 400 /*param_.iter_size()*/; ++i) {
+        for (int i = 0; i < param_.iter_size(); ++i) {
             loss += net_->ForwardBackward_StochDep();
         }
         loss /= param_.iter_size();
