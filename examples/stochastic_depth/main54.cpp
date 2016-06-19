@@ -93,28 +93,11 @@ template <typename Dtype>
 void Net<Dtype>::layerHelper_StochDep(int & elts, int& idx, int elt_incr, int idx_incr, int bottom_incr, bool use_top) {
     // cout << "layerHelper_StochDep" << endl;
     bottom_vecs_stochdept_[idx] = bottom_vecs_[elts];
-
     if (use_top) {
-        top_vecs_stochdept_[idx] = top_vecs_[elts + bottom_incr];
-    }
+        top_vecs_stochdept_[idx] = top_vecs_[elts + bottom_incr];}
     else {
-        top_vecs_stochdept_[idx] = bottom_vecs_[elts + bottom_incr];
-    }
-
+        top_vecs_stochdept_[idx] = bottom_vecs_[elts + bottom_incr];}
     layers_chosen[idx] = elts;
-
-//    // prints
-//
-//    shared_ptr<Layer<Dtype> > curr_layer = layers_[elts];
-//    vector<Blob<Dtype>*> og_bottom = bottom_vecs_[elts];
-//    vector<Blob<Dtype>*> og_top = top_vecs_[elts];
-//    // cout << "og layer:\t" << curr_layer->type() << " " <<  elts << "\tbottom size: " << og_bottom.size() << "\ttop size: " << og_top.size() <<  endl;
-//    vector<Blob<Dtype>*> curr_bottom = bottom_vecs_stochdept_[idx];
-//    vector<Blob<Dtype>*> curr_top = top_vecs_stochdept_[idx];
-//    // cout << "my layer:\t" << curr_layer->type() << " " <<  elts << "\tbottom size: " << curr_bottom.size() << "\ttop size: " << curr_top.size() <<  endl;
-//
-//    // end prints
-
     elts += elt_incr;
     idx += idx_incr;
     // cout << "layerHelper_StochDep end" << endl;
@@ -147,7 +130,7 @@ void Net<Dtype>::printvecblobs(vector<vector<Blob<Dtype>*> > vec, int &idx) {
     for (int i = 0; i < vec[idx].size(); i++) {
         Blob<Dtype>* blo= vec[idx][i];
         //// cout << blo->shape(0) << " " << blo->shape(1) << " " << blo->shape(2) << " " <<  blo->shape(3)  << endl;
-        // cout << blo << endl;
+        //// cout << blo << endl;
     }
     // cout << "printvecblobs end" << endl;
 }
@@ -180,18 +163,13 @@ template<typename Dtype>
 void Net<Dtype>::ChooseLayers_StochDep(){
     // cout << "ChooseLayers_StochDep" << endl;
     bottom_vecs_stochdept_.resize(this->layers().size());
-    // cout << "1" << endl;
-
     top_vecs_stochdept_.resize(this->layers().size());
-    // cout << "2" << endl;
     layers_chosen.resize(this->layers().size());
-    // cout << "3" << endl;
     int elts = 0;
     int idx = 0;
     for (int i = 0; i < 4; i++){
         layerHelper_StochDep(elts, idx, 1, 1, 0, true);
         }
-    // cout << "4"<< endl;
     srand((unsigned)time(NULL));
     double block_num  = 0;
     double num_blocks = 53;
@@ -204,7 +182,6 @@ void Net<Dtype>::ChooseLayers_StochDep(){
         standardResLayer(elts, idx, ran, prob);
         block_num += 1.0;
     }
-    // cout << "5" << endl;
     ran = (double) rand()/RAND_MAX;
     prob = 1 - 0.5*(block_num)/num_blocks;
     transitionResLayer(elts, idx, ran, prob);
@@ -216,7 +193,6 @@ void Net<Dtype>::ChooseLayers_StochDep(){
         standardResLayer(elts, idx, ran, prob);
         block_num += 1.0;
     }
-    // cout << "6" << endl;
     ran = (double) rand()/RAND_MAX;
     prob = 1 - 0.5*(block_num)/num_blocks;
     transitionResLayer(elts, idx, ran, prob);
@@ -228,7 +204,6 @@ void Net<Dtype>::ChooseLayers_StochDep(){
         standardResLayer(elts, idx, ran, prob);
         block_num += 1.0;
     }
-    // cout << "7" << endl;
 
     for (int i = 0; i < 4; i++) {
         layerHelper_StochDep(elts, idx, 1, 1, 0, true);
@@ -368,7 +343,7 @@ void Solver<Dtype>::Step_StochDep(int iters) {
         }
 
         for (int i = 0; i < callbacks_.size(); ++i) {
-            // cout << "--------------------callback1 called in step_stochdep-------------------" << endl;
+            cout << "--------------------callback1 called in step_stochdep-------------------" << endl;
             callbacks_[i]->on_start();
         }
         const bool display = param_.display() && iter_ % param_.display() == 0;
@@ -406,7 +381,7 @@ void Solver<Dtype>::Step_StochDep(int iters) {
             }
         }
         for (int i = 0; i < callbacks_.size(); ++i) {
-            // cout << "--------------------callback2 called in step_stochdep-------------------" << endl  ;
+            cout << "--------------------callback2 called in step_stochdep-------------------" << endl  ;
             callbacks_[i]->on_gradients_ready();
         }
         ApplyUpdate_StochDep();
