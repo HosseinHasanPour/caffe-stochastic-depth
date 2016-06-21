@@ -6,19 +6,30 @@ here: https://arxiv.org/abs/1603.09382. In summary: during training, layers are 
 This implementation is a work in progress. It currently has a working example of a 54 resblock convolutoinal neural network. This network is identical to the networks specified in the stochastic depth paper. It uses a linear resblock survival rate from 1.0 to 0.5 from resblocks 1 to 54 respectively and runs on the cifar10 dataset.
 
 
-# Getting Started
+## Getting Started
 
 Follow the standard caffe installation procedure specified here: http://caffe.berkeleyvision.org/installation.html. 
 
 To run the example, run the command ___ from the caffe root directory. 
 
-# Implementation
+## Implementation
 
 In the current implementation, there are two c++ functions that must be replaced in order to train a different network with stochastic depth. These are:
-- void Net<Dtype>::ChooseLayers_StochDep()
-- void Net<Dtype>::InitTestScalingStochdept()
+- `void Net<Dtype>::ChooseLayers_StochDep()`
+- `void Net<Dtype>::InitTestScalingStochdept()`
 
-There functionality is pretty simple, but implementing them can be a bit rough.
+Their functionality is pretty simple, but implementing them can be a bit rough.
 
-ChooseLayers_StochDep() initializes the datastructure `vector<int> layers_chosen`
-`vector<int> layers_chosen` contains the indeces of the layers in 
+## `void Net<Dtype>::ChooseLayers_StochDep()`
+
+`Net<Dtype>::ChooseLayers_StochDep()` is called by the solver in the function `void Solver<Dtype>::Step(int iters)` during every training iteration. It's job is to initialize a few data structures: 
+
+- `vector<int> layers_chosen`  
+- `vector<vector<Blob<Dtype>*> > bottom_vecs_stochdept_;`
+- `vector<vector<Blob<Dtype>*> > top_vecs_stochdept_;`
+
+### `vector<int> layers_chosen` 
+Internally, caffe stores it's layers in a vector, and it loops through this vector when doing forward and backward passes, calling each layer's individual forward and backward function. This vector is called ` vector<shared_ptr<Layer<Dtype> > > layers_`. `layers_chosen` must contain the indexes in `layers_` of all the layers that are *not* getting dropped in the current iteration. That is, all the surviving layers. The indeces must be ordered from least to greatest.
+
+### `vector<vector<Blob<Dtype>*> > bottom_vecs_stochdept_;`
+This vector stores pointers to bottom blobs of the layers specified in  `layers_chosen`. The indexes in `bottom_vecs_stochdept_` correspond to
