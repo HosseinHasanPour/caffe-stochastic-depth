@@ -47,6 +47,7 @@ You can take pointers from the vectors `top_vecs` and `bottom_vecs` to initilize
 ## `void Net<Dtype>::InitTestScalingStochdept()`
 This function is called once in net instantiation, and is used to initialize the vector 
 - `vector<double> test_scaling_stochdept_;`. 
+
 When testing a stochastic depth network with all layers included, you must multiply the output of each resblock with it's survival rate. `test_scaling_stochdept_` is a vector specifying what to scale the output of each layer in `layers_chosen` by during testing, corresponding by index with `layers_chosen`. In my example network, most of the values in `test_scaling_stochdept_` are 1, whereas the output of the last layer in each resblock that gets dropped gets scaled by the suvival rate of that resblock (a linear function from 1 to 0.5).
 
 Once these functions are set up you're ready to train your network.
