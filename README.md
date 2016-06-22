@@ -11,7 +11,7 @@ I have graphs of my results from training this network at the bottom of this rea
 ## Getting Started
 
 Follow the standard caffe installation procedure specified here: http://caffe.berkeleyvision.org/installation.html. 
-You'll also have to prepare and preprocess the cifar10 dataset. 
+You'll also have to prepare and preprocess the cifar10 dataset (instructions below). 
 
 The solver and net prototxts are in the folder `examples/stochastic_depth`. The solver is `solver54.prototxt`, and the nets are in `residual_train54.prototxt` and `residual_test54.prototxt`. Remember to change the location of the database in the layer prototxt files to point to your cifar10 installation.
 
