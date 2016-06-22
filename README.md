@@ -1,7 +1,7 @@
 # Deep Networks with Stochastic Depth (README still in progress)
 
 This project is an implementation of the Stochastic Depth method for training neural Networks, as specified in the research paper
-here: https://arxiv.org/abs/1603.09382.  In summary: during training, layers are stochastically dropped from the network, while in testing all layers remain. This has been shown to result in lower test error and shorter training time than equivalent networks that don't use stochastic depth. I am a student affiliated with Killian Weinberger's research group at Cornell (the authors of the paper).
+here: https://arxiv.org/abs/1603.09382.  In summary: during training, layers are stochastically dropped from the network, while in testing all layers remain. This has been shown to result in lower test error and shorter training time than equivalent networks that don't use stochastic depth. I am a student affiliated with Killian Weinberger's research group at Cornell (the authors of the paper), but am not myself an author.
 
 This implementation is a work in progress. It currently has a working example of a 54 resblock convolutional neural network. This network is identical to the networks specified in the stochastic depth paper. It uses a linear resblock survival rate from 1.0 to 0.5 from resblocks 1 to 54 respectively and runs on the cifar10 dataset.
 
