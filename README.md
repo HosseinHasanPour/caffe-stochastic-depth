@@ -23,7 +23,7 @@ Their functionality is pretty simple, but implementing them can be a bit rough.
 
 ## `void Net<Dtype>::ChooseLayers_StochDep()`
 
-`Net<Dtype>::ChooseLayers_StochDep()` is called by the solver in the function `void Solver<Dtype>::Step(int iters)` during every training iteration. It's job is to initialize a few data structures: 
+This function is called by the solver in the function `void Solver<Dtype>::Step(int iters)` during every training iteration. It's job is to initialize a few data structures: 
 
 - `vector<int> layers_chosen`  
 - `vector<vector<Blob<Dtype>*> > bottom_vecs_stochdept_;`
@@ -52,7 +52,10 @@ When testing a stochastic depth network with all layers included, you must multi
 
 Once these functions are set up you're ready to train your network.
 
-## Future Work
-I'm aware that this is not the most user friendly implementation. I have an idea bout how to modify the python interface to allow for quick and easy cosntruction of stochastic depth networks. Unfortunately I won't be able to work on this in the coming month of July (2016), but I hope to resume work in August. 
+##Disclaimer
+Ths implementation breaks some of caffe's extra functionalities, such as the functions in the tools folder, but nothing that is essential or training or running networks. All of Caffe's built in solvers should work fine, but I have only tested with the Nesterov solver.
 
-Feel free to reach out to me if you have any questions for me, I'm happy to help! 
+## Future Work
+I'm aware that this is not the most user friendly implementation. I have an idea bout how to modify the python interface to allow for quick and easy construction of stochastic depth networks. Unfortunately I won't be able to work on this in the coming month of July (2016), but I hope to resume work in August. 
+
+Feel free to reach out to me if you have any questions for me (or if you want to help with the python interface), I'm happy to help! 
