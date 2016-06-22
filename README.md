@@ -5,13 +5,22 @@ here: https://arxiv.org/abs/1603.09382.  In summary: during training, layers are
 
 This implementation is a work in progress. It currently has a working example of a 54 resblock convolutional neural network. This network is identical to the networks specified in the stochastic depth paper. It uses a linear resblock survival rate from 1.0 to 0.5 from resblocks 1 to 54 respectively and runs on the cifar10 dataset.
 
+I have graphs of my results from training this network at the bottom of this readme (in progress).
+
 
 ## Getting Started
 
 Follow the standard caffe installation procedure specified here: http://caffe.berkeleyvision.org/installation.html. 
-You'll also have to prepare and preprocess the cifar10 dataset.
+You'll also have to prepare and preprocess the cifar10 dataset. 
 
-To run the example, run the command ___ from the caffe root directory. 
+The solver and net prototxts are in the folder `examples/stochastic_depth`. The solver is `solver54.prototxt`, and the nets are in `residual_train54.prototxt` and `residual_test54.prototxt`. Remember to change the location of the database in the layer prototxt files to point to your cifar10 installation.
+
+To run the example, run the command 
+`./build/tools/caffe train --solver=examples/stochastic_depth/solver54.prototxt` 
+from the caffe root directory. 
+
+#### Preprocessing the Cifar10 Dataset (in progress)
+To get the same results that I got you'll have to preprocess the data in the same way.
 
 ## Implementation
 
@@ -59,3 +68,6 @@ Ths implementation breaks some of caffe's extra functionalities, such as the fun
 I'm aware that this is not the most user friendly implementation. I have an idea bout how to modify the python interface to allow for quick and easy construction of stochastic depth networks. Unfortunately I won't be able to work on this in the coming month of July (2016), but I hope to resume work in August. 
 
 Feel free to reach out to me if you have any questions for me (or if you want to help with the python interface), I'm happy to help! 
+
+
+## Example Net Evaluation and Graphs (in progress)
