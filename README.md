@@ -63,12 +63,12 @@ When testing a stochastic depth network with all layers included, you must multi
 Once these functions are set up you're ready to train your network.
 
 ##Disclaimer
-Ths implementation breaks some of caffe's extra functionalities, such as the functions in the tools folder, but nothing that is essential or training or running networks. All of Caffe's built in solvers should work fine, but I have only tested with the Nesterov solver.
+This implementation breaks some of caffe's extra functionalities, such as the functions in the tools folder, but nothing that is essential for training or running networks. All of Caffe's built in solvers should work fine, but I have only tested the Nesterov solver.
 
 ## Future Work
-I'm aware that this is not the most user friendly implementation. I have an idea bout how to modify the python interface to allow for quick and easy construction of stochastic depth networks. Unfortunately I won't be able to work on this in the coming month of July (2016), but I hope to resume work in August. 
+I'm aware that this is not the most user friendly implementation. I have an idea about how to extend this implementation to work with the python interface to allow for quick and easy construction of stochastic depth networks. I will begin work on this soon. 
 
 Feel free to reach out to me if you have any questions for me (or if you want to help with the python interface), I'm happy to help! 
 
 
-## Example Net Evaluation and Graphs (in progress)
+## Example Net Results and Graphs (in progress)
