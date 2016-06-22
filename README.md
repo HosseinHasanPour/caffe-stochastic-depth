@@ -17,7 +17,7 @@ The solver and net prototxts are in the folder `examples/stochastic_depth`. The 
 
 To run the example, run the command 
 - `./build/tools/caffe train --solver=examples/stochastic_depth/solver54.prototxt` 
-- 
+
 from the caffe root directory. 
 
 #### Preprocessing the Cifar10 Dataset (in progress)
