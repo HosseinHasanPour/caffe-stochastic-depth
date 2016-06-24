@@ -12,7 +12,11 @@ I have graphs of my results from training this network at the bottom of this rea
 
 ## Getting Started
 
-#### Preprocessing the cifar10 DatasetTo reproduce the results in the paper, proper preprocessing is needed, including subtracting means, dividing by std, and padding 0s for data augmentation. 
+Follow the standard caffe installation procedure specified here: http://caffe.berkeleyvision.org/installation.html. 
+
+#### Preprocessing the cifar10 Dataset
+
+To reproduce the results in the paper, proper preprocessing is needed, including subtracting means, dividing by std, and padding 0s for data augmentation. 
 
 First, get the cifar10 data in LEVELDB format. Run
 `./data/cifar/get_cifar10/sh`
@@ -21,8 +25,7 @@ First, get the cifar10 data in LEVELDB format. Run
 Then, run the preprocessing script
 `python examples/cifar10/preprocessing.py`
 
-Follow the standard caffe installation procedure specified here: http://caffe.berkeleyvision.org/installation.html. 
-You'll also have to prepare and preprocess the cifar10 dataset (instructions below). 
+####Training
 
 The solver and net prototxts are in the folder `examples/stochastic_depth`. The solver is `solver54.prototxt`, and the nets are in `residual_train54.prototxt` and `residual_test54.prototxt`. Remember to change the location of the database in the layer prototxt files to point to your cifar10 installation.
 
@@ -31,13 +34,9 @@ To run the example, run the command
 
 from the caffe root directory. 
 
-
-
 #### The Networks and Solvers
 We generated the prototxt (network and solver) files needed for reproducing the cifar10 results. We also provided the scripts to generate networks of different architectures, so you can generate and run stochastic depth networks of any depth and width. If you're interested, take a look at 
 `/examples/cifar/make_net.py`
-
-
 
 
 ## Implementation Details
