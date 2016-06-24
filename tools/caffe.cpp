@@ -224,6 +224,156 @@ int train() {
 }
 RegisterBrewFunction(train);
 
+//------------------------------------------------ MY FUNCTIONS --------------------------------------------------------
+
+// Train stochdep / Finetune a model.
+int train_stochdep() {
+  CHECK_GT(FLAGS_solver.size(), 0) << "Need a solver definition to train.";
+  CHECK(!FLAGS_snapshot.size() || !FLAGS_weights.size())
+  << "Give a snapshot to resume training or weights to finetune "
+          "but not both.";
+
+  caffe::SolverParameter solver_param;
+  caffe::ReadSolverParamsFromTextFileOrDie(FLAGS_solver, &solver_param);
+
+  // If the gpus flag is not provided, allow the mode and device to be set
+  // in the solver prototxt.
+  if (FLAGS_gpu.size() == 0
+      && solver_param.solver_mode() == caffe::SolverParameter_SolverMode_GPU) {
+    if (solver_param.has_device_id()) {
+      FLAGS_gpu = "" +
+                  boost::lexical_cast<string>(solver_param.device_id());
+    } else {  // Set default GPU if unspecified
+      FLAGS_gpu = "" + boost::lexical_cast<string>(0);
+    }
+  }
+
+  vector<int> gpus;
+  get_gpus(&gpus);
+  if (gpus.size() == 0) {
+    LOG(INFO) << "Use CPU.";
+    Caffe::set_mode(Caffe::CPU);
+  } else {
+    ostringstream s;
+    for (int i = 0; i < gpus.size(); ++i) {
+      s << (i ? ", " : "") << gpus[i];
+    }
+    LOG(INFO) << "Using GPUs " << s.str();
+#ifndef CPU_ONLY
+    cudaDeviceProp device_prop;
+    for (int i = 0; i < gpus.size(); ++i) {
+      cudaGetDeviceProperties(&device_prop, gpus[i]);
+      LOG(INFO) << "GPU " << gpus[i] << ": " << device_prop.name;
+    }
+#endif
+    solver_param.set_device_id(gpus[0]);
+    Caffe::SetDevice(gpus[0]);
+    Caffe::set_mode(Caffe::GPU);
+    Caffe::set_solver_count(gpus.size());
+  }
+
+  caffe::SignalHandler signal_handler(
+          GetRequestedAction(FLAGS_sigint_effect),
+          GetRequestedAction(FLAGS_sighup_effect));
+
+  shared_ptr<caffe::Solver<float> >
+          solver(caffe::SolverRegistry<float>::CreateSolver(solver_param));
+
+  solver->SetActionFunction(signal_handler.GetActionFunction());
+
+  if (FLAGS_snapshot.size()) {
+    LOG(INFO) << "Resuming from " << FLAGS_snapshot;
+    solver->Restore(FLAGS_snapshot.c_str());
+  } else if (FLAGS_weights.size()) {
+    CopyLayers(solver.get(), FLAGS_weights);
+  }
+
+  if (gpus.size() > 1) {
+    caffe::P2PSync<float> sync(solver, NULL, solver->param());
+    sync.Run(gpus);
+  } else {
+    LOG(INFO) << "Starting Optimization";
+    solver->Solve_StochDep();
+  }
+  LOG(INFO) << "Optimization Done.";
+  return 0;
+}
+RegisterBrewFunction(train_stochdep);
+
+
+// Test_stochdep: score a model.
+int test_stochdep() {
+  CHECK_GT(FLAGS_model.size(), 0) << "Need a model definition to score.";
+  CHECK_GT(FLAGS_weights.size(), 0) << "Need model weights to score.";
+
+  // Set device id and mode
+  vector<int> gpus;
+  get_gpus(&gpus);
+  if (gpus.size() != 0) {
+    LOG(INFO) << "Use GPU with device ID " << gpus[0];
+#ifndef CPU_ONLY
+    cudaDeviceProp device_prop;
+    cudaGetDeviceProperties(&device_prop, gpus[0]);
+    LOG(INFO) << "GPU device name: " << device_prop.name;
+#endif
+    Caffe::SetDevice(gpus[0]);
+    Caffe::set_mode(Caffe::GPU);
+  } else {
+    LOG(INFO) << "Use CPU.";
+    Caffe::set_mode(Caffe::CPU);
+  }
+  // Instantiate the caffe net.
+  Net<float> caffe_net(FLAGS_model, caffe::TEST);
+  caffe_net.CopyTrainedLayersFrom(FLAGS_weights);
+  LOG(INFO) << "Running for " << FLAGS_iterations << " iterations.";
+
+  vector<int> test_score_output_id;
+  vector<float> test_score;
+  float loss = 0;
+  for (int i = 0; i < FLAGS_iterations; ++i) {
+    float iter_loss;
+    const vector<Blob<float>*>& result =
+            caffe_net.Forward_StochDep_Test(&iter_loss);
+    loss += iter_loss;
+    int idx = 0;
+    for (int j = 0; j < result.size(); ++j) {
+      const float* result_vec = result[j]->cpu_data();
+      for (int k = 0; k < result[j]->count(); ++k, ++idx) {
+        const float score = result_vec[k];
+        if (i == 0) {
+          test_score.push_back(score);
+          test_score_output_id.push_back(j);
+        } else {
+          test_score[idx] += score;
+        }
+        const std::string& output_name = caffe_net.blob_names()[
+                caffe_net.output_blob_indices()[j]];
+        LOG(INFO) << "Batch " << i << ", " << output_name << " = " << score;
+      }
+    }
+  }
+  loss /= FLAGS_iterations;
+  LOG(INFO) << "Loss: " << loss;
+  for (int i = 0; i < test_score.size(); ++i) {
+    const std::string& output_name = caffe_net.blob_names()[
+            caffe_net.output_blob_indices()[test_score_output_id[i]]];
+    const float loss_weight = caffe_net.blob_loss_weights()[
+            caffe_net.output_blob_indices()[test_score_output_id[i]]];
+    std::ostringstream loss_msg_stream;
+    const float mean_score = test_score[i] / FLAGS_iterations;
+    if (loss_weight) {
+      loss_msg_stream << " (* " << loss_weight
+      << " = " << loss_weight * mean_score << " loss)";
+    }
+    LOG(INFO) << output_name << " = " << mean_score << loss_msg_stream.str();
+  }
+
+  return 0;
+}
+RegisterBrewFunction(test_stochdep);
+
+//----------------------------------------------- ORIGINAL CAFFE -------------------------------------------------------
+
 
 // Test: score a model.
 int test() {
