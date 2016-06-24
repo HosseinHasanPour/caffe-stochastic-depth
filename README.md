@@ -1,7 +1,9 @@
 # Deep Networks with Stochastic Depth (README still in progress)
 
 This project is an implementation of the Stochastic Depth method for training neural Networks, as specified in the research paper
-here: https://arxiv.org/abs/1603.09382.  In summary: during training, layers are stochastically dropped from the network, while in testing all layers remain. This has been shown to result in lower test error and shorter training time than equivalent networks that don't use stochastic depth. I am a student affiliated with Killian Weinberger's research group at Cornell (the authors of the paper), but am not myself an author.
+here: https://arxiv.org/abs/1603.09382.  
+
+In summary: during training, layers are stochastically dropped from the network, while in testing all layers remain. This has been shown to result in lower test error and shorter training time than equivalent networks that don't use stochastic depth. I am a student affiliated with Killian Weinberger's research group at Cornell (the authors of the paper), but am not myself an author.
 
 This implementation is a work in progress. It currently has a working example of a 54 resblock convolutional neural network. This network is identical to the networks specified in the stochastic depth paper. It uses a linear resblock survival rate from 1.0 to 0.5 from resblocks 1 to 54 respectively and runs on the cifar10 dataset.
 
@@ -9,6 +11,15 @@ I have graphs of my results from training this network at the bottom of this rea
 
 
 ## Getting Started
+
+#### Preprocessing the cifar10 DatasetTo reproduce the results in the paper, proper preprocessing is needed, including subtracting means, dividing by std, and padding 0s for data augmentation. 
+
+First, get the cifar10 data in LEVELDB format. Run
+`./data/cifar/get_cifar10/sh`
+`./examples/cifar10/create_cifar10.sh`
+
+Then, run the preprocessing script
+`python examples/cifar10/preprocessing.py`
 
 Follow the standard caffe installation procedure specified here: http://caffe.berkeleyvision.org/installation.html. 
 You'll also have to prepare and preprocess the cifar10 dataset (instructions below). 
@@ -20,10 +31,16 @@ To run the example, run the command
 
 from the caffe root directory. 
 
-#### Preprocessing the Cifar10 Dataset (in progress)
-To get the same results that I got you'll have to preprocess the data in the same way.
 
-## Implementation
+
+#### The Networks and Solvers
+We generated the prototxt (network and solver) files needed for reproducing the cifar10 results. We also provided the scripts to generate networks of different architectures, so you can generate and run stochastic depth networks of any depth and width. If you're interested, take a look at 
+`/examples/cifar/make_net.py`
+
+
+
+
+## Implementation Details
 
 In the current implementation, there are two c++ functions that must be replaced in order to train a different network with stochastic depth. These are:
 - `void Net<Dtype>::ChooseLayers_StochDep()`
@@ -72,3 +89,4 @@ Feel free to reach out to me if you have any questions for me (or if you want to
 
 
 ## Example Net Results and Graphs (in progress)
+L
