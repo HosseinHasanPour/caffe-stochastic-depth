@@ -1,9 +1,9 @@
-drop_data = open('drop_data.txt', 'w+')
+drop_data = open('drop_data_12000.txt', 'w+')
 # from dateutil import parser
 import datetime
 import time
 
-with open("./layers_dropped_test") as f:
+with open("./survival_rates_12000") as f:
     data = f.read()
 
 data = data.split('\n')
