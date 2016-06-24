@@ -109,9 +109,6 @@ class Net {
    * included.
    */
 
-  /// @brief DEPRECATED; set input blobs then use Forward() instead.
-  const vector<Blob<Dtype>*>& Forward(const vector<Blob<Dtype>* > & bottom,
-      Dtype* loss = NULL);
 
   /**
    * @brief Zeroes out the diffs of all net parameters.
@@ -279,9 +276,6 @@ class Net {
   int AppendBottom(const NetParameter& param, const int layer_id,
                    const int bottom_id, set<string>* available_blobs,
                    map<string, int>* blob_name_to_idx);
-  /// @brief Append a new parameter blob to the net.
-  void AppendParam(const NetParameter& param, const int layer_id,
-                   const int param_id);
 
   /// @brief Helper for displaying debug info in Forward.
   void ForwardDebugInfo(const int layer_id);
