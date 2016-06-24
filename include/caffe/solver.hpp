@@ -48,10 +48,10 @@ class Solver {
   void InitTestNets();
 
 //------------------------------------------- MY FUNCTIONS -----------------------------------------------------------
-   void Solve(const char* resume_file = NULL);
-   void Step(int iters);
+   void Solve_StochDep(const char* resume_file = NULL);
+   void Step_StochDep(int iters);
 protected:
-    virtual void ApplyUpdate() = 0;
+    virtual void ApplyUpdate_StochDep() = 0;
     void TestAll_StochDep();
     void Test_StochDep(const int test_net_id = 0);
 public:

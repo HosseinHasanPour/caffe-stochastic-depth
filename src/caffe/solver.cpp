@@ -15,7 +15,7 @@ namespace caffe {
 
 
 template <typename Dtype>
-void Solver<Dtype>::Step(int iters) {
+void Solver<Dtype>::Step_StochDep(int iters) {
     // cout << "Step_StochDep" << endl;
     const int start_iter = iter_;
     const int stop_iter = iter_ + iters;
@@ -80,7 +80,7 @@ void Solver<Dtype>::Step(int iters) {
             cout << "--------------------callback2 called in step-------------------" << endl  ;
             callbacks_[i]->on_gradients_ready();
         }
-        ApplyUpdate();
+        ApplyUpdate_StochDep();
 
         // Increment the internal iter_ counter -- its value should always indicate
         // the number of times the weights have been updated.
@@ -106,7 +106,7 @@ void Solver<Dtype>::Step(int iters) {
 
 
 template <typename Dtype>
-void Solver<Dtype>::Solve(const char* resume_file) {
+void Solver<Dtype>::Solve_StochDep(const char* resume_file) {
     // cout << "Solve_StochDep" << endl;
     CHECK(Caffe::root_solver());
     LOG(INFO) << "Solving " << net_->name();
@@ -123,7 +123,7 @@ void Solver<Dtype>::Solve(const char* resume_file) {
     // For a network that is trained by the solver, no bottom or top vecs
     // should be given, and we will just provide dummy vecs.
     int start_iter = iter_;
-    Step(param_.max_iter() - iter_);
+    Step_StochDep(param_.max_iter() - iter_);
     // If we haven't already, save a snapshot after optimization, unless
     // overridden by setting snapshot_after_train := false
     if (param_.snapshot_after_train()

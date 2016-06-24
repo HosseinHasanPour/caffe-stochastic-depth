@@ -39,7 +39,7 @@ class Net {
 // -------- MY FUNCTIONS ---------------------------------------------------------------------------------------------
 /// @brief Initialize a network with a NetParameter.
   void Init(const NetParameter& param);
-  const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
+  const vector<Blob<Dtype>*>& Forward_StochDep(Dtype* loss = NULL);
   Dtype ForwardBackward_StochDep();
   void BackwardFromTo_StochDep();
   void Backward_StochDep();

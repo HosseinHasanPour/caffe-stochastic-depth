@@ -59,7 +59,7 @@ template<typename Dtype>
 Dtype Net<Dtype>::ForwardBackward_StochDep() {
     // cout << "ForwardBackward_StochDep" << endl;
     Dtype loss;
-    Forward(&loss);
+    Forward_StochDep(&loss);
     Backward_StochDep();
     // cout << "ForwardBackward_StochDep end" << endl;
     return loss;
@@ -143,7 +143,7 @@ void Net<Dtype>::Backward_StochDep() {
 }
 
 template <typename Dtype>
-const vector<Blob<Dtype>*>& Net<Dtype>::Forward(Dtype* loss) {
+const vector<Blob<Dtype>*>& Net<Dtype>::Forward_StochDep(Dtype* loss) {
     // cout << "Forward_StochDep" << endl;
     if (loss != NULL) {
         *loss = ForwardFromTo_StochDep();
