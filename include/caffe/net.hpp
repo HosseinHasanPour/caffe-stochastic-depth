@@ -68,6 +68,31 @@ class Net {
   void ClearParamDiffs_StochDep();
 //---------------------------------------------------------------------------------------------------------------------
 
+
+  /**
+ * @brief Zeroes out the diffs of all net parameters.
+ *        Should be run before Backward.
+ */
+  void ClearParamDiffs();
+  /// @brief Updates the network weights based on the diff values computed.
+  void Update();
+  /// @brief Append a new parameter blob to the net.
+  void AppendParam(const NetParameter& param, const int layer_id, const int param_id);
+  Dtype ForwardFromTo(int start, int end);
+  void Backward();
+  void BackwardFromTo(int start, int end);
+  const vector<Blob<Dtype>*>& Forward(Dtype* loss = NULL);
+  /// @brief DEPRECATED; set input blobs then use Forward() instead.
+  const vector<Blob<Dtype>*>& Forward(const vector<Blob<Dtype>* > & bottom,
+  Dtype* loss = NULL);
+
+  Dtype ForwardBackward()  {
+    Dtype loss;
+    Forward(&loss);
+    Backward();
+    return loss;
+  };
+
   /// @brief DEPRECATED; use Forward() instead.
   const vector<Blob<Dtype>*>& ForwardPrefilled(Dtype* loss = NULL) {
     LOG_EVERY_N(WARNING, 1000) << "DEPRECATED: ForwardPrefilled() "
