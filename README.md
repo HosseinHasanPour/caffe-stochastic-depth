@@ -31,7 +31,7 @@ Then, run the preprocessing script
 
 The solver and net prototxts are in the folder `examples/stochastic_depth`. The solver is `solver54.prototxt`, and the nets are in `residual_train54.prototxt` and `residual_test54.prototxt`. Remember to change the location of the database in the layer prototxt files to point to your cifar10 installation.
 
-To run the example, run the command 
+To train the example network, run this command from your caffe root: 
 - `./build/tools/caffe train --solver=examples/stochastic_depth/solver54.prototxt` 
 
 from the caffe root directory. 
