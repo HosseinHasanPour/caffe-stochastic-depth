@@ -1,13 +1,9 @@
 # Deep Networks with Stochastic Depth (README still in progress)
 
 This project is an implementation of the Stochastic Depth method for training neural Networks, as specified in the research paper
-here: https://arxiv.org/abs/1603.09382.  
+here: https://arxiv.org/abs/1603.09382. 
 
-In summary: during training, layers are stochastically dropped from the network, while in testing all layers remain. This has been shown to result in lower test error and shorter training time than equivalent networks that don't use stochastic depth. 
-
-This implementation is a work in progress. It currently has a working example of a 54 resblock convolutional neural network. This network is identical to the networks specified in the stochastic depth paper. It uses a linear resblock survival rate from 1.0 to 0.5 from resblocks 1 to 54 respectively and runs on the cifar10 dataset.
-
-I have graphs of my results from training this network at the bottom of this readme (in progress).
+This implementation allows for usage of all standard caffe solvers, as well as stochastic depth, from the command line and c++ interface. It currently has a working example of a 54 resblock convolutional neural network. This network is identical to the 54 bock net specified in the stochastic depth paper.
 
 I am a student affiliated with Killian Weinberger's research group at Cornell (the authors of the paper), but am not myself an author.
 
@@ -29,12 +25,13 @@ Then, run the preprocessing script
 
 ####Training
 
-The solver and net prototxts are in the folder `examples/stochastic_depth`. The solver is `solver54.prototxt`, and the nets are in `residual_train54.prototxt` and `residual_test54.prototxt`. Remember to change the location of the database in the layer prototxt files to point to your cifar10 installation.
+The solver and net prototxts are in the folder `examples/stochastic_depth`. The solver is `solver54.prototxt`, and the nets are in `residual_train54.prototxt` and `residual_test54.prototxt`. Remember to change the location of the ciphar10 database in the data layers of both net prototxt files to point to your cifar10 installation.
 
-To train the example network, run this command from your caffe root: 
+To train the example network using stochastic depth, run this command from your caffe root: 
+- `./build/tools/caffe train_stochdep --solver=examples/stochastic_depth/solver54.prototxt` 
+
+To train the example network without stochastic depth (like a normal caffe net), run this command from your caffe root: 
 - `./build/tools/caffe train --solver=examples/stochastic_depth/solver54.prototxt` 
-
-from the caffe root directory. 
 
 #### The Networks and Solvers
 We generated the prototxt (network and solver) files needed for reproducing the cifar10 results. We also provided the scripts to generate networks of different architectures, so you can generate and run stochastic depth networks of any depth and width. If you're interested, take a look at 
@@ -90,4 +87,3 @@ Feel free to reach out to me if you have any questions for me (or if you want to
 
 
 ## Example Net Results and Graphs (in progress)
-L
