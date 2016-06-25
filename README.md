@@ -46,7 +46,7 @@ In the current implementation, there are two c++ functions that must be replaced
 
 Their functionality is pretty simple, but implementing them can be a bit rough.
 
-## `void Net<Dtype>::ChooseLayers_StochDep()`
+### `void Net<Dtype>::ChooseLayers_StochDep()`
 
 This function is called by the solver in the function `void Solver<Dtype>::Step(int iters)` during every training iteration. It's job is to initialize a few data structures: 
 
@@ -69,7 +69,7 @@ You can take pointers from the vectors `top_vecs` and `bottom_vecs` to initilize
 
 
 
-## `void Net<Dtype>::InitTestScalingStochdept()`
+### `void Net<Dtype>::InitTestScalingStochdept()`
 This function is called once in net instantiation, and is used to initialize the vector 
 - `vector<double> test_scaling_stochdept_;`. 
 
