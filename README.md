@@ -90,6 +90,3 @@ Once these functions are set up you're ready to train your network.
 I'm aware that this is not the most user friendly implementation. I have an idea about how to extend this implementation to work with the python interface to allow for quick and easy construction of stochastic depth networks. I will begin work on this soon. 
 
 Feel free to reach out to me if you have any questions for me (or if you want to help with the python interface), I'm happy to help! 
-
-
-# Example Net Results and Graphs (in progress)
