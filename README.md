@@ -1,4 +1,4 @@
-# Deep Networks with Stochastic Depth (README still in progress)
+# Deep Networks with Stochastic Depth
 
 This project is an implementation of the Stochastic Depth method for training neural Networks, as specified in the research paper
 here: https://arxiv.org/abs/1603.09382. 
