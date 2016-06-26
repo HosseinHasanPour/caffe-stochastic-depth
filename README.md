@@ -8,6 +8,15 @@ This implementation allows for usage of all standard caffe solvers, as well as s
 I am a student affiliated with Killian Weinberger's research group at Cornell (the authors of the paper), but am not myself an author.
 
 
+### Example Network Results
+The example network was trained with both stochastic depth and regular depth, each on a Titan X GPU. Stochastic depth outperformed regular depth by 0.9%. Regular depth reached a max accuracy of 94.2187, while stochastic depth reached 95.1016. The time saving, however, weren't quite as good as those outlined in the paper. The net has a liner survival rate decay from 1 to 0.5, so in theory stochastic depth should train in 25% less time than regular depth. The example network only saw a 18.3% reduction in training time. This could be due to inefficiencies in the implementation and/or suboptimal memory management on the machine.
+
+Here are links to graphs of the results:
+- [Test Accuracy vs Iterations](results/graphs/test_accuracy.png)
+- [Test Accuracy vs Time](results/graphs/test_accuracy_vstime.png)
+- [Test Loss vs Iterations](results/graphs/test_loss.png)
+- [Train Loss vs Iterations](results/graphs/train_loss.png)
+
 # Getting Started
 
 Follow the standard caffe installation procedure specified here: http://caffe.berkeleyvision.org/installation.html. 
