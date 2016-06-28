@@ -44,7 +44,7 @@ To train the example network without stochastic depth (like a normal caffe net),
 
 #### The Networks and Solvers
 We generated the prototxt (network and solver) files needed for reproducing the cifar10 results. We also provided the scripts to generate networks of different architectures, so you can generate and run stochastic depth networks of any depth and width. If you're interested, take a look at 
-`/examples/cifar/make_net.py`
+`/examples/stochastic-depth/make_net.py`
 
 
 # Implementation Details
